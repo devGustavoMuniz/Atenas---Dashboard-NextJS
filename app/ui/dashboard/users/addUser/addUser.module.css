@@ -17,7 +17,7 @@
   padding: 30px;
   background-color: var(--bg);
   color: var(--text);
-  border: 2px solid #2e374a;
+  border: 2px solid #1e1d1d;
   border-radius: 5px;
   margin-bottom: 30px;
 }
@@ -33,7 +33,47 @@
 .form button{
   width: 100%;
   padding: 30px;
-  background-color: teal;
+  background-color: #fcf119;
+  color: black !important;
+  color: var(--text);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.profilePhotoWrapper {
+  width: 600px;
+  margin: 0 auto;
+  display: block;
+  padding: 30px;
+  background-color: var(--bg);
+  color: var(--text);
+  border: 2px solid #1e1d1d;
+  border-radius: 5px;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profilePhotoWrapper div {
+  width: 500px;
+  height: 500px;
+  margin-bottom: 15px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url('../../../../../public/noavatar.png');
+  border-radius: 5px;
+}
+
+.profilePhotoWrapper label {
+  width: 100%;
+  padding: 30px;
+  background-color: #fcf119;
+  color: black !important;
+  text-align: center;
   color: var(--text);
   border: none;
   border-radius: 5px;

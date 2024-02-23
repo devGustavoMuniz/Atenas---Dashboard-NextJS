@@ -8,9 +8,8 @@ import bcrypt from "bcrypt";
 import { signIn } from "../auth";
 
 export const addUser = async (formData) => {
-  const { username, email, password, phone, address, isAdmin, isActive } =
+  const { contractId, schoolName, username, email, schoolClass, password, phone, isAdmin, profilePhoto } =
     Object.fromEntries(formData);
-
   try {
     connectToDB();
 
@@ -18,13 +17,15 @@ export const addUser = async (formData) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser = new User({
+      contractId,
+      schoolName,
       username,
       email,
+      schoolClass,
       password: hashedPassword,
       phone,
-      address,
       isAdmin,
-      isActive,
+      profilePhoto
     });
 
     await newUser.save();

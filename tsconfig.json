@@ -27,7 +27,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "app/ui/dashboard/teste/teste.jsx", "app/ui/dashboard/dropzone/d"  ],
   "exclude": [
     "node_modules"
   ]
