@@ -5,19 +5,13 @@ import MenuLink from "./menuLink/menuLink";
 import styles from "./sidebar.module.css";
 import jwt from 'jsonwebtoken';
 import { useEffect, useState } from "react";
+import { redirect } from 'next/navigation';
 import {
   MdDashboard,
   MdSupervisedUserCircle,
   MdShoppingBag,
-  MdAttachMoney,
-  MdWork,
-  MdAnalytics,
-  MdPeople,
-  MdOutlineSettings,
-  MdHelpCenter,
   MdLogout,
 } from "react-icons/md";
-import { redirect } from 'next/navigation'
 
 const menuItems = [
   {

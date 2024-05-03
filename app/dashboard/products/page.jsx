@@ -2,12 +2,9 @@
 
 import Image from "next/image";
 import styles from "../../ui/dashboard/products/products.module.css";
-import Pagination from "../../ui/dashboard/pagination/pagination";
 import Search from "../../ui/dashboard/search/search";
 import { useEffect, useState } from 'react';
 import { handlerAlbum } from '../../lib';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 const ProductsPage = () => {
   // const q = searchParams?.q || "";
@@ -26,7 +23,7 @@ const ProductsPage = () => {
       console.log('albuns: ', albums);
     }
     handleAlbum();
-  }, []);
+  }, [albums]);
 
   return (
     <div className={styles.container}>
@@ -78,10 +75,6 @@ const ProductsPage = () => {
           ))}
         </tbody>
       </table>
-      <ToastContainer
-        position="top-center"
-        theme="dark"
-      />
       {/* <Pagination count={albums.length} /> */}
     </div>
   );
