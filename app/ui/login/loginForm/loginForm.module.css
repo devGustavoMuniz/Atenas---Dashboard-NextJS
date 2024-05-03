@@ -1,9 +1,8 @@
 .form {
   background-color: var(--bgSoft);
-  padding: 50px;
+  padding: 25px 50px;
   border-radius: 10px;
   width: 500px;
-  height: 500px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -13,7 +12,7 @@
 
 .form input {
   width: 100%;
-  padding: 30px;
+  padding: 16px;
   border: 2px solid #1e1d1d;
   border-radius: 5px;
   background-color: var(--bg);
@@ -22,9 +21,9 @@
 
 .form button {
   width: 100%;
-  padding: 30px;
+  padding: 16px;
   background-color: #fcf119;
-color: black !important;
+  color: black !important;
   color: var(--text);
   border: none;
   cursor: pointer;

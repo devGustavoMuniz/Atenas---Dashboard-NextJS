@@ -27,6 +27,7 @@ const AddUserPage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log("log: ", user.isAdm);
     setUser(prevUser => ({
         ...prevUser,
         [name]: value
@@ -64,7 +65,7 @@ const AddUserPage = () => {
           onChange={handleChange} />
         <input type="phone" placeholder="Telefone" name="telefone" onChange={handleChange} />
         <select name="isAdm" id="isAdm" onChange={handleChange}>
-          <option value={false}>
+          <option value=''>
             É Admin?
           </option>
           <option value={true}>Sim</option>

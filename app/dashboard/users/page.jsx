@@ -66,7 +66,6 @@ const UsersPage = () => {
             <td>Nome</td>
             <td>Email</td>
             <td>Telefone</td>
-            <td>Cargo</td>
             <td>Ações</td>
           </tr>
         </thead>
@@ -87,7 +86,6 @@ const UsersPage = () => {
               </td>
               <td>{user.email}</td>
               <td>{user.telefone}</td>
-              <td>{user.isAdmin ? "Admin" : "Aluno"}</td>
               <td>
                 <div className={styles.buttons}>
                   <button

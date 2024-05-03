@@ -86,7 +86,7 @@ const SingleUserPage = () => {
                     <input type="text" name="telefone" value={user.telefone} onChange={handleChange} />
 
                     <label>É Admin?</label>
-                    <select name="isAdmin" id="isAdmin" value={user.isAdmin} onChange={handleChange}>
+                    <select name="isAdm" id="isAdm" value={user.isAdm} onChange={handleChange}>
                         <option value={true}>Sim</option>
                         <option value={false}>Não</option>
                     </select>

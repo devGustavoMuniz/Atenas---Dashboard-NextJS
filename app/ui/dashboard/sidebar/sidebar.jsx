@@ -12,6 +12,7 @@ import {
   MdShoppingBag,
   MdLogout,
 } from "react-icons/md";
+import { useRouter } from 'next/navigation';
 
 const menuItems = [
   {
@@ -44,6 +45,7 @@ const menuItems = [
 const Sidebar = () => {
   const [user, setUser] = useState('');
   
+  
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -53,10 +55,12 @@ const Sidebar = () => {
       username: decodedToken.nomeUsuario
     })
   }, [])
-  
+
+  const router = useRouter();
 
   const logout = () => {
     localStorage.removeItem('token');
+    router.push('/login');
   }
 
   return (
