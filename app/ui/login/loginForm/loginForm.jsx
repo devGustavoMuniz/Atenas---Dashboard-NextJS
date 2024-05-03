@@ -1,20 +1,35 @@
-"use client";
+"use client"
 
-import { authenticate } from "../../../lib/actions";
+import { useState } from 'react';
 import styles from "./loginForm.module.css";
-import { useFormState } from "react-dom";
+import { login } from "../../../lib";
+import { useRouter } from 'next/navigation';
 
 const LoginForm = () => {
-  const [state, formAction] = useFormState(authenticate, undefined);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const router = useRouter();
+
+  const handleLogin = async () => {
+    try {
+      const { token } = await login({ username, password });
+      localStorage.setItem('token', token);
+      router.push('/dashboard');
+    } catch (error) {
+      setError('Erro ao fazer login:', error);
+    }
+  }
 
   return (
-    <form action={formAction} className={styles.form}>
+    <div className={styles.form}>
       <h1>Login</h1>
-      <input type="text" placeholder="Nome de Usuário" name="username" />
-      <input type="password" placeholder="Senha" name="password" />
-      <button>Login</button>
-      {state && state}
-    </form>
+      <input type="text" placeholder="Nome de Usuário" name="username" value={username} onChange={(e) => setUsername(e.target.value)} />
+      <input type="password" placeholder="Senha" name="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+      <button onClick={handleLogin}>Login</button>
+      {error && error}
+    </div>
   );
 };
 

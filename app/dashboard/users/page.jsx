@@ -1,15 +1,57 @@
-import { deleteUser } from "../../lib/actions";
-import { fetchUsers } from "../../lib/data";
+"use client"
+
 import Pagination from "../../ui/dashboard/pagination/pagination";
 import Search from "../../ui/dashboard/search/search";
 import styles from "../../ui/dashboard/users/users.module.css";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from 'react';
+import { handleDeleteUser, handlerUser } from '../../lib';
+import { useRouter } from 'next/navigation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { redirect } from 'next/navigation';
 
-const UsersPage = async ({ searchParams }) => {
-  const q = searchParams?.q || "";
-  const page = searchParams?.page || 1;
-  const { count, users } = await fetchUsers(q, page);
+const UsersPage = () => {
+  // const q = searchParams?.q || "";
+  // const page = searchParams?.page || 1;
+  // const { count, users } = await fetchUsers(q, page);
+
+  const [users, setUsers] = useState([]);
+
+  const router = useRouter();
+
+  const setSingleUserOnStorage = ({nome, email}) => {
+    users.find((user) => {
+      if (user.nomeUsuario === nome && user.email == email) {
+        localStorage.setItem('user', JSON.stringify(user));
+        router.push('/dashboard/user');
+      }
+    })
+  }
+
+  const deleteUser = async ({nomeUsuario, email}) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        redirect('/login');
+    } else {
+        const response = await handleDeleteUser(token, {nomeUsuario: nomeUsuario, email: email});
+        if (response.status === 200) {
+            toast("Usuário excluído com sucesso!")
+        } else {
+            toast("Erro ao excluir usuário")
+        }
+    }
+  }
+
+  useEffect(() => {
+    const handleUser = async () => {
+      const token = localStorage.getItem('token');
+      const response = await handlerUser(token);
+      setUsers(response);
+    }
+    handleUser();
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -26,49 +68,52 @@ const UsersPage = async ({ searchParams }) => {
             <td>Email</td>
             <td>Telefone</td>
             <td>Cargo</td>
-            <td>Status</td>
             <td>Ações</td>
           </tr>
         </thead>
         <tbody>
           {users.map((user) => (
-            <tr key={user.id}>
+            <tr key={user.email}>
               <td>
                 <div className={styles.user}>
                   <Image
-                    src={user.img || "/noavatar.png"}
+                    src={user.foto || "/noavatar.png"}
                     alt=""
                     width={40}
                     height={40}
                     className={styles.userImage}
                   />
-                  {user.username}
+                  {user.nomeUsuario}
                 </div>
               </td>
               <td>{user.email}</td>
-              <td>{user.phone}</td>
+              <td>{user.telefone}</td>
               <td>{user.isAdmin ? "Admin" : "Aluno"}</td>
-              <td>{user.isActive ? "Ativo" : "Inativo"}</td>
               <td>
                 <div className={styles.buttons}>
-                  <Link href={`/dashboard/users/${user.id}`}>
-                    <button className={`${styles.button} ${styles.view}`}>
-                      Detalhes
-                    </button>
-                  </Link>
-                  <form action={deleteUser}>
-                    <input type="hidden" name="id" value={(user.id)} />
-                    <button className={`${styles.button} ${styles.delete}`}>
-                      Excluir
-                    </button>
-                  </form>
+                  <button
+                    className={`${styles.button} ${styles.view}`}
+                    onClick={() => setSingleUserOnStorage({ nome: user.nomeUsuario, email: user.email })}
+                  >
+                    Detalhes
+                  </button>
+                  <button
+                    className={`${styles.button} ${styles.delete}`}
+                    onClick={() => deleteUser({ nomeUsuario: user.nomeUsuario, email: user.email })}
+                  >
+                    Excluir
+                  </button>
                 </div>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <Pagination count={count} />
+      <ToastContainer
+        position="top-center"
+        theme="dark"
+      />
+      {/* <Pagination count={users.length} /> */}
     </div>
   );
 };

@@ -1,9 +1,23 @@
+"use client"
+
 import Image from "next/image";
 import styles from "./transactions.module.css";
-import { fetchUsers } from "../../../lib/data";
+import { useEffect, useState } from 'react';
+import { handlerUser } from '../../../lib';
 
-const Transactions = async () => {
-  const { count, users } = await fetchUsers("", 1);
+const Transactions = () => {
+
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    const handleUser = async () => {
+      const token = localStorage.getItem('token');
+      console.log(token);
+      const response = await handlerUser(token);
+      setUsers(response);
+    }
+    handleUser();
+  }, []);
+
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Últimos Registros</h2>
@@ -12,34 +26,28 @@ const Transactions = async () => {
           <tr>
             <td>Name</td>
             <td>Email</td>
-            <td>Status</td>
             <td>Data de registro</td>
           </tr>
         </thead>
         <tbody>
           {users.map((user) => (
-            <tr key={user.id}>
+            <tr key={user.email}>
               <td>
                 <div className={styles.user}>
                   <Image
-                    src="/noavatar.png"
+                    src={user.foto}
                     alt=""
                     width={40}
                     height={40}
                     className={styles.userImage}
                   />
-                  {user.username}
+                  {user.nomeUsuario}
                 </div>
               </td>
               <td>
                 {user.email}
               </td>
-              <td>
-                <span className={`${styles.status} ${user.isActive ? styles.done : styles.cancelled}`}>
-                  {user.isActive ? 'Ativo' : 'Inativo'}
-                </span>
-              </td>
-              <td>{user.createdAt?.toString().slice(4, 16)}</td>
+              <td>{user.createdAt}</td>
             </tr>
           ))}
           

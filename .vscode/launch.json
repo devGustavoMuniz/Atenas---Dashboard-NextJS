@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "command": "yarn dev",
+        "name": "sla debug",
+        "request": "launch",  
+        "type": "node-terminal",
+        "env": {
+          "MONGO": "mongodb+srv://atenas-admindb:Y90mFWMktTWGmce0@cluster0.7ixcpf0.mongodb.net/?retryWrites=true&w=majority",
+          "AUTH_SECRET": "generatekeysecret",
+          "AUTH_URL":  "http://localhost:3000/api/auth"
+        }
+      },
+    ]
+  }

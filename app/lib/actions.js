@@ -1,169 +1,90 @@
-"use server";
+import axios from 'axios';
 
-import { revalidatePath } from "next/cache";
-import { Product, User } from "./models";
-import { connectToDB } from "./utils";
-import { redirect } from "next/navigation";
-import bcrypt from "bcrypt";
-import { signIn } from "../auth";
+const baseUrl = 'https://back-atenas-be3942560054.herokuapp.com';
 
-export const addUser = async (formData) => {
-  const { contractId, schoolName, username, email, schoolClass, password, phone, isAdmin, profilePhoto } =
-    Object.fromEntries(formData);
-  try {
-    connectToDB();
-
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const newUser = new User({
-      contractId,
-      schoolName,
-      username,
-      email,
-      schoolClass,
-      password: hashedPassword,
-      phone,
-      isAdmin,
-      profilePhoto
+export const login = async ({ username, password }) => {
+    const response = await axios.post(`${baseUrl}/v1/autenticar`, {}, {
+      auth: {
+        username,
+        password
+      }
     });
 
-    await newUser.save();
-  } catch (err) {
-    console.log(err);
-    throw new Error("Failed to create user!");
-  }
-
-  revalidatePath("/dashboard/users");
-  redirect("/dashboard/users");
+    return response.data;
 };
 
-export const updateUser = async (formData) => {
-  const { id, username, email, password, phone, address, isAdmin, isActive } =
-    Object.fromEntries(formData);
-
-  try {
-    connectToDB();
-
-    const updateFields = {
-      username,
-      email,
-      password,
-      phone,
-      address,
-      isAdmin,
-      isActive,
-    };
-
-    Object.keys(updateFields).forEach(
-      (key) =>
-        (updateFields[key] === "" || undefined) && delete updateFields[key]
-    );
-
-    await User.findByIdAndUpdate(id, updateFields);
-  } catch (err) {
-    console.log(err);
-    throw new Error("Failed to update user!");
-  }
-
-  revalidatePath("/dashboard/users");
-  redirect("/dashboard/users");
-};
-
-export const addProduct = async (formData) => {
-  const { title, desc, price, stock, color, size } =
-    Object.fromEntries(formData);
-
-  try {
-    connectToDB();
-
-    const newProduct = new Product({
-      title,
-      desc,
-      price,
-      stock,
-      color,
-      size,
-    });
-
-    await newProduct.save();
-  } catch (err) {
-    console.log(err);
-    throw new Error("Failed to create product!");
-  }
-
-  revalidatePath("/dashboard/products");
-  redirect("/dashboard/products");
-};
-
-export const updateProduct = async (formData) => {
-  const { id, title, desc, price, stock, color, size } =
-    Object.fromEntries(formData);
-
-  try {
-    connectToDB();
-
-    const updateFields = {
-      title,
-      desc,
-      price,
-      stock,
-      color,
-      size,
-    };
-
-    Object.keys(updateFields).forEach(
-      (key) =>
-        (updateFields[key] === "" || undefined) && delete updateFields[key]
-    );
-
-    await Product.findByIdAndUpdate(id, updateFields);
-  } catch (err) {
-    console.log(err);
-    throw new Error("Failed to update product!");
-  }
-
-  revalidatePath("/dashboard/products");
-  redirect("/dashboard/products");
-};
-
-export const deleteUser = async (formData) => {
-  const { id } = Object.fromEntries(formData);
-
-  try {
-    connectToDB();
-    await User.findByIdAndDelete(id);
-  } catch (err) {
-    console.log(err);
-    throw new Error("Failed to delete user!");
-  }
-
-  revalidatePath("/dashboard/products");
-};
-
-export const deleteProduct = async (formData) => {
-  const { id } = Object.fromEntries(formData);
-
-  try {
-    connectToDB();
-    await Product.findByIdAndDelete(id);
-  } catch (err) {
-    console.log(err);
-    throw new Error("Failed to delete product!");
-  }
-
-  revalidatePath("/dashboard/products");
-};
-
-export const authenticate = async (prevState, formData) => {
-  const { username, password } = Object.fromEntries(formData);
-
-  try {
-    await signIn("credentials", { username, password });
-  } catch (err) {
-    if (err.message.includes("CredentialsSignin")) {
-      return "Wrong Credentials";
+export const validate = async ({token}) => {
+  const response = await axios.post(`${baseUrl}/v1/autenticar`, {}, {
+    headers: {
+      Authorization: `Bearer ${token}`
     }
-    throw err;
+  });
+
+  return response.status == 200 ? true : false;
+};
+
+export const getAllUsers = async (token) => {
+  try{
+    const res = await axios.get(`${baseUrl}/v1/user/getAll`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    console.log('aaaaaa:', res);
+    return res;
+  } catch (err) {
+    console.error('err: ', err);
+  }
+};
+
+export const addUser = async (token, user) => {
+  try{
+    const response = await axios.post(`${baseUrl}/v1/user`, user, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response;
+  } catch (err) {
+    console.error('err: ', err);
+  }
+};
+
+export const updateUser = async (token, user) => {
+  try{
+    return await axios.put(`${baseUrl}/v1/user`, user, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  } catch (err) {
+    console.error('err: ', err);
+  }
+};
+
+export const deleteUser = async (token, {nomeUsuario, email}) => {
+  try{
+    return await axios.patch(`${baseUrl}/v1/user`, {nomeUsuario, email}, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imd1c3Rhdm9AZXhhbXBsZS5jb20iLCJub21lVXN1YXJpbyI6Ikd1c3Rhdm9vb28iLCJpYXQiOjE3MTQ3NjA3NTIsImV4cCI6MTcxNDgwMzk1Mn0.uWg3O93pCPdPP-ghcpC3GU5e5c52i9Kcjh6EZKhtKV4`
+      }
+    });
+  } catch (err) {
+    console.error('err: ', err);
+  }
+};
+
+export const getAllAlbums = async (token) => {
+  try{
+    const res = await axios.post(`${baseUrl}/v1/albuns/getAll`, {limit: 0, skip: 1}, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    console.log("resasas: ", res);
+    return res;
+  } catch (err) {
+    console.error('err: ', err);
   }
 };

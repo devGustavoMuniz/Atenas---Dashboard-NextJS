@@ -12,7 +12,7 @@
 }
 
 .addButton{
-  padding: 10px;
+  padding: 14px 28px;
   background-color: #5d57c9;
   color: var(--text);
   border: none;
@@ -45,7 +45,7 @@
 }
 
 .button{
-  padding: 5px 10px;
+  padding: 10px 20px;
   border-radius: 5px;
   color: var(--text);
   border: none;

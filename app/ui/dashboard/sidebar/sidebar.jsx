@@ -1,6 +1,10 @@
+"use client"
+
 import Image from "next/image";
 import MenuLink from "./menuLink/menuLink";
 import styles from "./sidebar.module.css";
+import jwt from 'jsonwebtoken';
+import { useEffect, useState } from "react";
 import {
   MdDashboard,
   MdSupervisedUserCircle,
@@ -13,7 +17,7 @@ import {
   MdHelpCenter,
   MdLogout,
 } from "react-icons/md";
-import { auth, signOut } from "../../../auth";
+import { redirect } from 'next/navigation'
 
 const menuItems = [
   {
@@ -43,14 +47,30 @@ const menuItems = [
   },
 ];
 
-const Sidebar = async () => {
-  const { user } = await auth();
+const Sidebar = () => {
+  const [user, setUser] = useState('');
+  
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    !token && redirect('/login');
+    const decodedToken = jwt.decode(token);
+    setUser({
+      username: decodedToken.nomeUsuario
+    })
+  }, [])
+  
+
+  const logout = () => {
+    localStorage.removeItem('token');
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.user}>
         <Image
           className={styles.userImage}
-          src={user.img || "/noavatar.png"}
+          src={'/logoAtenas.jpg'}
           alt=""
           width="50"
           height="50"
@@ -69,17 +89,10 @@ const Sidebar = async () => {
           </li>
         ))}
       </ul>
-      <form
-        action={async () => {
-          "use server";
-          await signOut();
-        }}
-      >
-        <button className={styles.logout}>
+        <button className={styles.logout} onClick={logout}>
           <MdLogout />
           Sair
         </button>
-      </form>
     </div>
   );
 };
