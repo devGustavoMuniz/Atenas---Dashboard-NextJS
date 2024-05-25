@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseUrl = 'https://back-atenas-be3942560054.herokuapp.com';
+const baseUrl = 'https://atenas-formaturas-5jarkngkqq-rj.a.run.app/';
 
 export const login = async ({ username, password }) => {
     const response = await axios.post(`${baseUrl}/v1/autenticar`, {}, {
@@ -30,7 +30,6 @@ export const getAllUsers = async (token) => {
         Authorization: `Bearer ${token}`
       }
     });
-    console.log('aaaaaa:', res);
     return res;
   } catch (err) {
     console.error('err: ', err);
@@ -67,7 +66,7 @@ export const deleteUser = async (token, {nomeUsuario, email}) => {
     return await axios.patch(`${baseUrl}/v1/user`, {nomeUsuario, email}, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imd1c3Rhdm9AZXhhbXBsZS5jb20iLCJub21lVXN1YXJpbyI6Ikd1c3Rhdm9vb28iLCJpYXQiOjE3MTQ3NjA3NTIsImV4cCI6MTcxNDgwMzk1Mn0.uWg3O93pCPdPP-ghcpC3GU5e5c52i9Kcjh6EZKhtKV4`
+        Authorization: `Bearer ${token}`
       }
     });
   } catch (err) {
@@ -82,7 +81,6 @@ export const getAllAlbums = async (token) => {
         Authorization: `Bearer ${token}`
       }
     });
-    console.log("resasas: ", res);
     return res;
   } catch (err) {
     console.error('err: ', err);
