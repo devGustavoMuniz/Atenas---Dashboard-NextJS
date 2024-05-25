@@ -34,9 +34,22 @@
   width: 100%;
   padding: 30px;
   background-color: #fcf119;
-color: black !important;
+  color: black !important;
   color: var(--text);
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.dropzone {
+  width: 100%;
+  padding: 50px;
+  margin-bottom: 20px;
+  background-color: var(--bg);
+  border: 2px dashed #5d5a5a;
+  border-radius: 5px;
+}
+
+.dropzone p {
+  text-align: center;
 }

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseUrl = 'https://atenas-formaturas-5jarkngkqq-rj.a.run.app/';
+const baseUrl = 'https://atenas-formaturas-5jarkngkqq-rj.a.run.app';
 
 export const login = async ({ username, password }) => {
     const response = await axios.post(`${baseUrl}/v1/autenticar`, {}, {
@@ -69,6 +69,23 @@ export const deleteUser = async (token, {nomeUsuario, email}) => {
         Authorization: `Bearer ${token}`
       }
     });
+  } catch (err) {
+    console.error('err: ', err);
+  }
+};
+
+export const addAlbum = async (token, fd) => {
+  try{
+    fd.forEach((value, key) => {
+      console.log(key, value);
+    });
+    const res = await axios.post(`${baseUrl}/v1/albuns`, fd, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return res;
   } catch (err) {
     console.error('err: ', err);
   }

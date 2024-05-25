@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Search from "../../ui/dashboard/search/search";
 import styles from "../../ui/dashboard/users/users.module.css";
@@ -12,45 +12,42 @@ import 'react-toastify/dist/ReactToastify.css';
 import { redirect } from 'next/navigation';
 
 const UsersPage = () => {
-  // const q = searchParams?.q || "";
-  // const page = searchParams?.page || 1;
-  // const { count, users } = await fetchUsers(q, page);
-
   const [users, setUsers] = useState([]);
-
   const router = useRouter();
-
-  const setSingleUserOnStorage = ({nome, email}) => {
-    users.find((user) => {
-      if (user.nomeUsuario === nome && user.email == email) {
-        localStorage.setItem('user', JSON.stringify(user));
-        router.push('/dashboard/user');
-      }
-    })
-  }
-
-  const deleteUser = async ({nomeUsuario, email}) => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-        redirect('/login');
-    } else {
-        const response = await handleDeleteUser(token, {nomeUsuario: nomeUsuario, email: email});
-        if (response.status === 200) {
-            toast("Usuário excluído com sucesso!")
-        } else {
-            toast("Erro ao excluir usuário")
-        }
-    }
-  }
 
   useEffect(() => {
     const handleUser = async () => {
       const token = localStorage.getItem('token');
       const response = await handlerUser(token);
       setUsers(response);
-    }
+    };
+
     handleUser();
   }, []);
+
+  const setSingleUserOnStorage = ({ nome, email }) => {
+    const user = users.find((user) => user.nomeUsuario === nome && user.email === email);
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+      router.push('/dashboard/user');
+    }
+  };
+
+  const deleteUser = async ({ nomeUsuario, email }) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      redirect('/login');
+    } else {
+      const response = await handleDeleteUser(token, { nomeUsuario, email });
+      if (response.status === 200) {
+        toast("Usuário excluído com sucesso!");
+        const updatedResponse = await handlerUser(token);
+        setUsers(updatedResponse);
+      } else {
+        toast("Erro ao excluir usuário");
+      }
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -106,10 +103,7 @@ const UsersPage = () => {
           ))}
         </tbody>
       </table>
-      <ToastContainer
-        position="top-center"
-        theme="dark"
-      />
+      <ToastContainer position="top-center" theme="dark" />
       {/* <Pagination count={users.length} /> */}
     </div>
   );

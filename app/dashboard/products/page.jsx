@@ -4,6 +4,7 @@ import Image from "next/image";
 import styles from "../../ui/dashboard/products/products.module.css";
 import Search from "../../ui/dashboard/search/search";
 import { useEffect, useState } from 'react';
+import Link from "next/link";
 import { handlerAlbum } from '../../lib';
 
 const ProductsPage = () => {
@@ -16,20 +17,19 @@ const ProductsPage = () => {
   useEffect(() => {
     const handleAlbum = async () => {
       const token = localStorage.getItem('token');
-      console.log("antes req");
       const response = await handlerAlbum(token);
-      console.log('dfdsf: ', response);
       setAlbums(response);
-      console.log('albuns: ', albums);
     }
     handleAlbum();
-  }, [albums]);
+  }, []);
 
   return (
     <div className={styles.container}>
       <div className={styles.top}>
         <Search placeholder="Busque por um álbum..." />
-        <button className={styles.addButton}>Adicionar Novo</button>
+        <Link href="/dashboard/products/add">
+          <button className={styles.addButton}>Adicionar novo</button>
+        </Link>
       </div>
       <table className={styles.table}>
         <thead>
@@ -43,7 +43,7 @@ const ProductsPage = () => {
         </thead>
         <tbody>
           {albums.map((album) => (
-            <tr key={album.email}>
+            <tr key={album.nomeAluno}>
               <td>
                 <div className={styles.product}>
                   <Image
