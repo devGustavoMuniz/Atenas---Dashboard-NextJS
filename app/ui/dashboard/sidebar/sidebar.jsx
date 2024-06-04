@@ -33,11 +33,11 @@ const menuItems = [
         path: "/dashboard/products",
         icon: <MdShoppingBag />,
       },
-      {
-        title: "Álbuns Físicos",
-        path: "/dashboard/album",
-        icon: <MdShoppingBag />,
-      },
+      // {
+      //   title: "Álbuns Físicos",
+      //   path: "/dashboard/album",
+      //   icon: <MdShoppingBag />,
+      // },
     ],
   },
 ];
