@@ -100,10 +100,6 @@ const SingleAlbumPage = () => {
               acceptedFiles.forEach((file) => {
                 fd.append('image', file);
               });
-            } else {
-              album.fotos.forEach((file) => {
-                fd.append('image', file);
-              });
             }
             const selectedUser = album.contratoEAluno ? JSON.parse(album.contratoEAluno) : null;
             selectedUser ? fd.append('numeroContrato', selectedUser.numeroContrato) : fd.append('numeroContrato', album.numeroContrato);
