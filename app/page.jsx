@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation'
 const Homepage = () => {
   
   useEffect(() => {
-    redirect('/dashboard');
+    redirect('/home');
   }, []);
 
   return (

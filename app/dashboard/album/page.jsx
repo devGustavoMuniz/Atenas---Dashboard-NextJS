@@ -49,7 +49,7 @@ const SingleAlbumPage = () => {
 
     }, []);
 
-    console.log('albumFotos > ', album.fotos);
+    console.log('albumFotos > ', album);
 
     const handleFileInputChange = (event) => {
         const file = event.target.files[0];
@@ -113,7 +113,7 @@ const SingleAlbumPage = () => {
             fd.append('minFotos', album.minFotos);
             fd.append('maxFotos', album.maxFotos);
             const response = await handleUpdateAlbum(token, fd);
-            if (response.status === 201) {
+            if (response.status === 200) {
               toast("Album adicionado com sucesso!")
             } else {
               toast("F")
@@ -197,8 +197,8 @@ const SingleAlbumPage = () => {
 
                     <label>Tipo do Álbum:</label>
                     <div className={styles.numPageWrapper}>
-                      <input className={styles.input} type="number" placeholder="Número mínimo de páginas" name="minFotos" required onChange={handleChange} />
-                      <input className={styles.input} type="number" placeholder="Número máximo de páginas" name="maxFotos" required onChange={handleChange} />
+                      <input className={styles.input} type="number" placeholder="Número mínimo de páginas" name="minFotos" value={album.minFotos} required onChange={handleChange} />
+                      <input className={styles.input} type="number" placeholder="Número máximo de páginas" name="maxFotos" value={album.maxFotos} required onChange={handleChange} />
                     </div>
 
                     <label>Tipo do Álbum:</label>
