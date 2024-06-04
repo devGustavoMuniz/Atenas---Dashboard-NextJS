@@ -5,7 +5,10 @@ import styles from "../../ui/dashboard/products/products.module.css";
 import Search from "../../ui/dashboard/search/search";
 import { useEffect, useState } from 'react';
 import Link from "next/link";
-import { handlerAlbum } from '../../lib';
+import { handleDeleteAlbum, handlerAlbum } from '../../lib';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useRouter, redirect } from 'next/navigation';
 
 const ProductsPage = () => {
   // const q = searchParams?.q || "";
@@ -13,6 +16,7 @@ const ProductsPage = () => {
   // const { count, products } = await fetchProducts(q, page);
 
   const [albums, setAlbums] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     const handleAlbum = async () => {
@@ -22,6 +26,30 @@ const ProductsPage = () => {
     }
     handleAlbum();
   }, []);
+
+  const setSingleAlbumOnStorage = ({ nomeAluno, numeroContrato }) => {
+    const album = albums.find((album) => album.nomeAluno === nomeAluno && album.numeroContrato === numeroContrato);
+    if (album) {
+      localStorage.setItem('album', JSON.stringify(album));
+      router.push('/dashboard/album');
+    }
+  };
+
+  const deleteUser = async ({ nomeAluno, numeroContrato }) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      redirect('/login');
+    } else {
+      const response = await handleDeleteAlbum(token, { nomeAluno, numeroContrato });
+      if (response.status === 200) {
+        toast("Usuário excluído com sucesso!");
+        const updatedResponse = await handlerAlbum(token);
+        setAlbums(updatedResponse);
+      } else {
+        toast("Erro ao excluir usuário");
+      }
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -47,7 +75,7 @@ const ProductsPage = () => {
               <td>
                 <div className={styles.product}>
                   <Image
-                    src={"/noproduct.jpg"}
+                    src={"/logoAtenas.jpg"}
                     alt=""
                     width={40}
                     height={40}
@@ -61,11 +89,17 @@ const ProductsPage = () => {
               <td>{album.createdAt}</td>
               <td>
                 <div className={styles.buttons}>
-                  <button className={`${styles.button} ${styles.view}`}>
+                  <button
+                    className={`${styles.button} ${styles.view}`}
+                    onClick={() => setSingleAlbumOnStorage({ nomeAluno: album.nomeAluno, numeroContrato: album.numeroContrato })}
+                  >
                     View
                   </button>
                   <div>
-                    <button className={`${styles.button} ${styles.delete}`}>
+                    <button
+                      className={`${styles.button} ${styles.delete}`}
+                      onClick={() => deleteUser({ nomeAluno: album.nomeAluno, numeroContrato: album.numeroContrato })}
+                    >
                       Delete
                     </button>
                   </div>
@@ -75,6 +109,7 @@ const ProductsPage = () => {
           ))}
         </tbody>
       </table>
+      <ToastContainer position="top-center" theme="dark" />
       {/* <Pagination count={albums.length} /> */}
     </div>
   );

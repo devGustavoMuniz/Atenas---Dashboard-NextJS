@@ -1,0 +1,164 @@
+.container {
+  display: flex;
+  gap: 50px;
+  margin-top: 20px;
+  flex-direction: column;
+}
+
+.infoContainer {
+  flex: 1;
+  background-color: var(--bgSoft);
+  padding: 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  color: var(--textSoft);
+  height: 100%;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.imgContainer{
+  width: 100%;
+  height: 300px;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.formContainer {
+  flex: 1;
+  background-color: var(--bgSoft);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.form{
+  display: flex;
+  flex-direction: column;
+}
+
+.form input, .form textarea, .form select{
+  padding: 20px;
+  border: 2px solid #1e1d1d;
+  border-radius: 5px;
+  background-color: var(--bg);
+  color: var(--text);
+  margin: 10px 0px;
+}
+
+.form label{
+  font-size: 12px;
+}
+
+.form button{
+  width: 100%;
+  padding: 20px;
+  background-color: #fcf119;
+  color: black !important;
+  color: var(--text);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.addButton {
+  padding: 14px 28px;
+  background-color: #5d57c9;
+  color: var(--text);
+  border: none;
+  border-radius: 5px;
+  margin-top: 5px;
+  cursor: pointer;
+}
+
+.profilePhotoWrapper {
+  width: 600px;
+  margin: 0 auto;
+  display: block;
+  padding: 30px;
+  background-color: var(--bg);
+  color: var(--text);
+  border: 2px solid #1e1d1d;
+  border-radius: 5px;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profilePhotoWrapper div {
+  width: 500px;
+  height: 500px;
+  margin-bottom: 15px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url('../../../../../public/noavatar.png');
+  border-radius: 5px;
+}
+
+.profilePhotoWrapper label {
+  width: 100%;
+  padding: 30px;
+  background-color: #fcf119;
+  color: black !important;
+  text-align: center;
+  color: var(--text);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.checkboxArea {
+  padding: 30px;
+  background-color: var(--bg);
+  color: var(--text);
+  border: 2px solid #1e1d1d;
+  border-radius: 5px;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.dropzone {
+  width: 100%;
+  padding: 30px;
+  margin-bottom: 20px;
+  background-color: var(--bg);
+  border: 2px dashed #5d5a5a;
+  border-radius: 5px;
+  display: block;
+}
+
+.dropzone p {
+  text-align: center;
+}
+
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.numPageWrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.imagesWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+  background: #292929;
+  padding: 3px;
+  border-radius: 5px;
+}
+
+.numPageWrapper input {
+  width: 49%;
+}

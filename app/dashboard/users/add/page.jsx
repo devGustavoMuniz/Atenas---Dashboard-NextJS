@@ -18,7 +18,8 @@ const AddUserPage = () => {
         document.getElementById('batata').style.backgroundImage = `url(${reader.result})`;
         setUser(prevUser => ({
         ...prevUser,
-            foto: reader.result
+            foto: reader.result,
+            file: file
         }));
     };
 
@@ -39,10 +40,19 @@ const AddUserPage = () => {
     if (!token) {
         redirect('/login');
     } else {
-        const response = await handleAddUser(token, user);
+        const fd = new FormData();
+        fd.append('image', user.file);
+        fd.append('numeroContrato', String(user.numeroContrato));
+        fd.append('nomeUsuario', String(user.nomeUsuario));
+        fd.append('turma', String(user.turma));
+        fd.append('telefone', String(user.telefone));
+        fd.append('nomeEscola', String(user.nomeEscola));
+        fd.append('email', String(user.email));
+        fd.append('senha', String(user.senha));
+        fd.append('isAdm', user.isAdm ? 'true' : 'false');
+        const response = await handleAddUser(token, fd);
         if (response.status === 201) {
-            toast("Usuário atualizado com sucesso!")
-            localStorage.setItem('user', JSON.stringify(user))
+            toast("Usuário adicionado com sucesso!")
         } else {
             toast("F")
         }

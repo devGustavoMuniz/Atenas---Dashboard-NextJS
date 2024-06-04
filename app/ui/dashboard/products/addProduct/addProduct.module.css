@@ -3,7 +3,7 @@
   padding: 20px;
   border-radius: 10px;
   margin-top: 20px;
-}
+} 
 
 .form {
   display: flex;
@@ -11,9 +11,10 @@
   justify-content: space-between;
 }
 
-.form input,
+.form .input,
 .form textarea,
-.form select {
+.form select,
+.checkboxArea {
   padding: 30px;
   background-color: var(--bg);
   color: var(--text);
@@ -22,11 +23,11 @@
   margin-bottom: 30px;
 }
 
-.form input, .form select {
+.form .input, .form select {
   width: 45%;
 }
 
-.form textarea{
+.form textarea, .checkboxArea{
   width: 100%;
 }
 
@@ -41,9 +42,13 @@
   cursor: pointer;
 }
 
+.form input, .form textarea, .form select, .form label {
+  cursor: pointer;
+}
+
 .dropzone {
   width: 100%;
-  padding: 50px;
+  padding: 30px;
   margin-bottom: 20px;
   background-color: var(--bg);
   border: 2px dashed #5d5a5a;
@@ -52,4 +57,30 @@
 
 .dropzone p {
   text-align: center;
+}
+
+.checkboxArea h4 {
+  margin-bottom: 10px;
+}
+
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.numPageWrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 45%;
+}
+
+.imagesWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+  background: #292929;
+  padding: 3px;
+  border-radius: 5px;
 }

@@ -6,10 +6,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from 'react';
 import { handleDeleteUser, handlerUser } from '../../lib';
-import { useRouter } from 'next/navigation';
+import { useRouter, redirect } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { redirect } from 'next/navigation';
 
 const UsersPage = () => {
   const [users, setUsers] = useState([]);
