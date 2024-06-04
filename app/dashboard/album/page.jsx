@@ -114,8 +114,8 @@ const SingleAlbumPage = () => {
               }
             });
             fd.append('tipoAlbum', album.tipoAlbum);
-            fd.append('minPage', album.minPage);
-            fd.append('maxPage', album.maxPage);
+            fd.append('minFotos', album.minFotos);
+            fd.append('maxFotos', album.maxFotos);
             const response = await handleUpdateAlbum(token, fd);
             if (response.status === 201) {
               toast("Album adicionado com sucesso!")
@@ -201,8 +201,8 @@ const SingleAlbumPage = () => {
 
                     <label>Tipo do Álbum:</label>
                     <div className={styles.numPageWrapper}>
-                      <input className={styles.input} type="number" placeholder="Número mínimo de páginas" name="minPage" required onChange={handleChange} />
-                      <input className={styles.input} type="number" placeholder="Número máximo de páginas" name="maxPage" required onChange={handleChange} />
+                      <input className={styles.input} type="number" placeholder="Número mínimo de páginas" name="minFotos" required onChange={handleChange} />
+                      <input className={styles.input} type="number" placeholder="Número máximo de páginas" name="maxFotos" required onChange={handleChange} />
                     </div>
 
                     <label>Tipo do Álbum:</label>
