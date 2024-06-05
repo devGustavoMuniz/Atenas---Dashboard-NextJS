@@ -11,7 +11,6 @@ const Transactions = () => {
   useEffect(() => {
     const handleUser = async () => {
       const token = localStorage.getItem('token');
-      console.log(token);
       const response = await handlerUser(token);
       setUsers(response);
     }

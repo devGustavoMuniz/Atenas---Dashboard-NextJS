@@ -28,7 +28,6 @@ const AddUserPage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log("log: ", user.isAdm);
     setUser(prevUser => ({
         ...prevUser,
         [name]: value

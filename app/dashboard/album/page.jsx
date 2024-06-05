@@ -49,8 +49,6 @@ const SingleAlbumPage = () => {
 
     }, []);
 
-    console.log('albumFotos > ', album);
-
     const handleFileInputChange = (event) => {
         const file = event.target.files[0];
         const reader = new FileReader();

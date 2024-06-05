@@ -30,7 +30,6 @@ export const getAllUsers = async (token) => {
         Authorization: `Bearer ${token}`
       }
     });
-    console.log('res', res);
     return res;
   } catch (err) {
     console.error('err: ', err);
@@ -79,7 +78,6 @@ export const deleteUser = async (token, {nomeUsuario, email}) => {
 
 export const addAlbum = async (token, fd) => {
   try{
-    console.log('passou aq');
     const res = await axios.post(`${baseUrl}/v1/albuns`, fd, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -120,17 +118,6 @@ export const deleteAlbum = async (token, {nomeAluno, numeroContrato}) => {
 
 export const updateAlbum = async (token, fd) => {
   try{
-    fd.forEach((value, key) => {
-      let valueType;
-      if (value instanceof File) {
-        valueType = 'File';
-      } else if (value instanceof Blob) {
-        valueType = 'Blob';
-      } else {
-        valueType = typeof value;
-      }
-      console.log(key, value, valueType);
-    });
     return await axios.put(`${baseUrl}/v1/albuns`, fd, {
       headers: {
         Authorization: `Bearer ${token}`,
