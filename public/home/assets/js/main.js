@@ -174,31 +174,6 @@ gsap.from(".about .brands-area", {
     },
     opacity: 0
 })
-gsap.from("#services .section-title", {
-    scrollTrigger: {
-        trigger: "#services",
-        start: matchMedia("(max-width: 1024px)").matches ? "top center" : "center bottom",
-    },
-    opacity: 0,
-    y: -25
-})
-gsap.from("#services .section-text", {
-    scrollTrigger: {
-        trigger: "#services",
-        start: matchMedia("(max-width: 1024px)").matches ? "top center" : "center bottom"
-    },
-    opacity: 0,
-    y: -25
-})
-gsap.from("#services .item-list .item", {
-    scrollTrigger: {
-        trigger: "#services",
-        start: matchMedia("(max-width: 1024px)").matches ? "top center" : "center bottom"
-    },
-    y: -50,
-    opacity: 0,
-    stagger: 0.3
-})
 gsap.from("#portfolio .section-title", {
     scrollTrigger: {
         trigger: "#portfolio",
@@ -224,30 +199,6 @@ gsap.from("#portfolio .item-wrapper .item", {
     opacity: 0,
     stagger: 0.3
 })
-gsap.from("#customers .left", {
-    scrollTrigger: {
-        trigger: "#customers",
-        start: "top+=100 center"
-    },
-    x: -50,
-    opacity: 0
-})
-gsap.from("#customers .right", {
-    scrollTrigger: {
-        trigger: "#customers",
-        start: "top+=100 center"
-    },
-    x: 50,
-    opacity: 0
-})
-gsap.from("#customers .contact", {
-    scrollTrigger: {
-        trigger: "#customers",
-        start: "top+=100 center"
-    },
-    delay: 0.5,
-    opacity: 0
-})
 gsap.from(".footer-line", {
     scrollTrigger: {
         trigger: "footer",
@@ -271,23 +222,6 @@ gsap.from(".footer-nav li", {
     },
     opacity: 0,
     y: -50,
-    stagger: 0.3
-})
-gsap.from(".social .title", {
-    scrollTrigger: {
-        trigger: "footer",
-        start: "top bottom",
-    },
-    opacity: 0,
-    y: -50
-})
-gsap.from(".social li", {
-    scrollTrigger: {
-        trigger: "footer",
-        start: "top bottom",
-    },
-    opacity: 0,
-    y: -10,
     stagger: 0.3
 })
 gsap.from(".copyright", {
