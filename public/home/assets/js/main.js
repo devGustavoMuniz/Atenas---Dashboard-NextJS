@@ -257,3 +257,7 @@ menuLnk.forEach(item => {
         itemBody.style.overflowY = "scroll";
     })
 })
+
+document.addEventListener('contextmenu', function(event) {
+    event.preventDefault();
+});

@@ -22,7 +22,7 @@
   margin-bottom: 30px;
 }
 
-.form input, .form select {
+.form input, .form select, .inputPasswordWrapper {
   width: 45%;
 }
 
@@ -78,4 +78,21 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.inputPasswordWrapper {
+  position: relative;
+}
+
+.labelShowPassword {
+  position: absolute;
+  right: 30px;
+  top: 30px;
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.inputPassword {
+  width: 100%!important;
 }

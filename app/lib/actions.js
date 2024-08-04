@@ -13,14 +13,18 @@ export const login = async ({ username, password }) => {
     return response.data;
 };
 
-export const validate = async ({token}) => {
-  const response = await axios.post(`${baseUrl}/v1/autenticar`, {}, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  });
-
-  return response.status == 200 ? true : false;
+export const validate = async (token) => {
+  try {
+    const response = await axios.post(`${baseUrl}/v1/autenticar`, {}, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response.status == 200 ? true : false;
+  } catch (error) {
+    return false;
+  }
+  
 };
 
 export const getAllUsers = async (token) => {

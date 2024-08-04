@@ -24,8 +24,42 @@
   padding: 16px;
   background-color: #fcf119;
   color: black !important;
-  color: var(--text);
   border: none;
   cursor: pointer;
   border-radius: 5px;
+}
+
+.form a {
+  width: 100%;
+  padding: 16px;
+  background-color: var(--bg);
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.passwordWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+}
+
+.labelShowPassword {
+  display: flex;
+  justify-content: flex-end;
+  gap: 3px;
+  align-items: center;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.labelShowPassword input {
+  width: fit-content;
 }

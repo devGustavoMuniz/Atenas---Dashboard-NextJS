@@ -51,8 +51,10 @@ const Sidebar = () => {
     const token = localStorage.getItem('token');
     !token && redirect('/login');
     const decodedToken = jwt.decode(token);
+    console.log(decodedToken);
     setUser({
-      username: decodedToken.nomeUsuario
+      username: decodedToken.nomeUsuario,
+      foto: decodedToken.foto
     })
   }, [])
 
@@ -68,7 +70,7 @@ const Sidebar = () => {
       <div className={styles.user}>
         <Image
           className={styles.userImage}
-          src={'/logoAtenas.jpg'}
+          src={user.foto || '/logoAtenas.jpg'}
           alt=""
           width="50"
           height="50"

@@ -9,6 +9,7 @@ import { redirect } from 'next/navigation';
 
 const AddUserPage = () => {
   const [user, setUser] = useState([]);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
@@ -66,12 +67,16 @@ const AddUserPage = () => {
         <input type="text" placeholder="Nome" name="nomeUsuario" required onChange={handleChange} />
         <input type="email" placeholder="Email" name="email" required onChange={handleChange} />
         <input type="text" placeholder="Turma" name="turma" required onChange={handleChange} />
-        <input
-          type="password"
-          placeholder="Senha"
-          name="senha"
-          required
-          onChange={handleChange} />
+        <div className={styles.inputPasswordWrapper}>
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Senha"
+            name="senha"
+            className={styles.inputPassword}
+            required
+            onChange={handleChange} />
+          <label className={styles.labelShowPassword} onClick={() => setShowPassword(!showPassword)}>Mostrar</label>
+        </div>
         <input type="phone" placeholder="Telefone" name="telefone" onChange={handleChange} />
         <select name="isAdm" id="isAdm" onChange={handleChange}>
           <option value=''>
