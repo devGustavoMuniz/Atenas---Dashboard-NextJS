@@ -12,6 +12,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const UsersPage = () => {
   const [users, setUsers] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -32,20 +34,34 @@ const UsersPage = () => {
     }
   };
 
-  const deleteUser = async ({ nomeUsuario, email }) => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      redirect('/login');
-    } else {
-      const response = await handleDeleteUser(token, { nomeUsuario, email });
-      if (response.status === 200) {
-        toast("Usuário excluído com sucesso!");
-        const updatedResponse = await handlerUser(token);
-        setUsers(updatedResponse);
+  const confirmDeleteUser = (user) => {
+    setUserToDelete(user);
+    setShowModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (userToDelete) {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        redirect('/login');
       } else {
-        toast("Erro ao excluir usuário");
+        const response = await handleDeleteUser(token, { nomeUsuario: userToDelete.nomeUsuario, email: userToDelete.email });
+        if (response.status === 200) {
+          toast("Usuário excluído com sucesso!");
+          const updatedResponse = await handlerUser(token);
+          setUsers(updatedResponse);
+        } else {
+          toast("Erro ao excluir usuário");
+        }
+        setShowModal(false);
+        setUserToDelete(null);
       }
     }
+  };
+
+  const handleCancelDelete = () => {
+    setShowModal(false);
+    setUserToDelete(null);
   };
 
   return (
@@ -92,7 +108,7 @@ const UsersPage = () => {
                   </button>
                   <button
                     className={`${styles.button} ${styles.delete}`}
-                    onClick={() => deleteUser({ nomeUsuario: user.nomeUsuario, email: user.email })}
+                    onClick={() => confirmDeleteUser({ nomeUsuario: user.nomeUsuario, email: user.email })}
                   >
                     Excluir
                   </button>
@@ -102,8 +118,21 @@ const UsersPage = () => {
           ))}
         </tbody>
       </table>
+
+      {/* Modal de confirmação */}
+      {showModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <p>Tem certeza que deseja excluir o usuário {userToDelete?.nomeUsuario}?</p>
+            <div className={styles.modalButtons}>
+              <button className={styles.cancelButton} onClick={handleCancelDelete}>Cancelar</button>
+              <button className={styles.confirmButton} onClick={handleConfirmDelete}>Confirmar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <ToastContainer position="top-center" theme="dark" />
-      {/* <Pagination count={users.length} /> */}
     </div>
   );
 };

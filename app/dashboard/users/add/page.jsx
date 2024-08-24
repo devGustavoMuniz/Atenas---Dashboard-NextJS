@@ -80,10 +80,10 @@ const AddUserPage = () => {
         <input type="phone" placeholder="Telefone" name="telefone" onChange={handleChange} />
         <select name="isAdm" id="isAdm" onChange={handleChange}>
           <option value=''>
-            É Admin?
+            Tipo de Usuário
           </option>
-          <option value={true}>Sim</option>
-          <option value={false}>Não</option>
+          <option value={true}>Administrador</option>
+          <option value={false}>Formando</option>
         </select>
         <div className={styles.profilePhotoWrapper}>
           <div id="batata"></div>
