@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Image from "next/image";
 import styles from "../../ui/dashboard/products/products.module.css";
@@ -11,11 +11,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useRouter, redirect } from 'next/navigation';
 
 const ProductsPage = () => {
-  // const q = searchParams?.q || "";
-  // const page = searchParams?.page || 1;
-  // const { count, products } = await fetchProducts(q, page);
-
   const [albums, setAlbums] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [albumToDelete, setAlbumToDelete] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -23,7 +21,7 @@ const ProductsPage = () => {
       const token = localStorage.getItem('token');
       const response = await handlerAlbum(token);
       setAlbums(response);
-    }
+    };
     handleAlbum();
   }, []);
 
@@ -35,20 +33,34 @@ const ProductsPage = () => {
     }
   };
 
-  const deleteUser = async ({ nomeAluno, numeroContrato }) => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      redirect('/login');
-    } else {
-      const response = await handleDeleteAlbum(token, { nomeAluno, numeroContrato });
-      if (response.status === 200) {
-        toast("Álbum excluído com sucesso!");
-        const updatedResponse = await handlerAlbum(token);
-        setAlbums(updatedResponse);
+  const confirmDeleteAlbum = (album) => {
+    setAlbumToDelete(album);
+    setShowModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (albumToDelete) {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        redirect('/login');
       } else {
-        toast("Erro ao excluir álbum");
+        const response = await handleDeleteAlbum(token, { nomeAluno: albumToDelete.nomeAluno, numeroContrato: albumToDelete.numeroContrato });
+        if (response.status === 200) {
+          toast("Álbum excluído com sucesso!");
+          const updatedResponse = await handlerAlbum(token);
+          setAlbums(updatedResponse);
+        } else {
+          toast("Erro ao excluir álbum");
+        }
+        setShowModal(false);
+        setAlbumToDelete(null);
       }
     }
+  };
+
+  const handleCancelDelete = () => {
+    setShowModal(false);
+    setAlbumToDelete(null);
   };
 
   return (
@@ -95,22 +107,33 @@ const ProductsPage = () => {
                   >
                     View
                   </button>
-                  <div>
-                    <button
-                      className={`${styles.button} ${styles.delete}`}
-                      onClick={() => deleteUser({ nomeAluno: album.nomeAluno, numeroContrato: album.numeroContrato })}
-                    >
-                      Delete
-                    </button>
-                  </div>
+                  <button
+                    className={`${styles.button} ${styles.delete}`}
+                    onClick={() => confirmDeleteAlbum({ nomeAluno: album.nomeAluno, numeroContrato: album.numeroContrato })}
+                  >
+                    Delete
+                  </button>
                 </div>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {/* Modal de confirmação */}
+      {showModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <p>Tem certeza que deseja excluir o álbum de {albumToDelete?.nomeAluno}?</p>
+            <div className={styles.modalButtons}>
+              <button className={styles.cancelButton} onClick={handleCancelDelete}>Cancelar</button>
+              <button className={styles.confirmButton} onClick={handleConfirmDelete}>Confirmar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <ToastContainer position="top-center" theme="dark" />
-      {/* <Pagination count={albums.length} /> */}
     </div>
   );
 };

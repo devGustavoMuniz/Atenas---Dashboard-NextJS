@@ -95,10 +95,10 @@ const SingleUserPage = () => {
                     <label>Telefone:</label>
                     <input type="text" name="telefone" value={user.telefone} onChange={handleChange} />
 
-                    <label>É Admin?</label>
+                    <label>Tipo de Usuário</label>
                     <select name="isAdm" id="isAdm" value={user.isAdm} onChange={handleChange}>
-                        <option value={true}>Sim</option>
-                        <option value={false}>Não</option>
+                        <option value={true}>Administrador</option>
+                        <option value={false}>Formando</option>
                     </select>
 
                     <label>Alterar Senha:</label>
