@@ -12,6 +12,7 @@ import Image from 'next/image';
 const AddProductPage = () => {
   const [album, setAlbum] = useState([]);
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false); // Estado para o loader
   const [eventTypes, setEventTypes] = useState({
     Passeio: false,
     Baile: false,
@@ -34,50 +35,51 @@ const AddProductPage = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setAlbum(prevUser => ({
-        ...prevUser,
-        [name]: value
+      ...prevUser,
+      [name]: value
     }));
   };
 
   const handleSubmit = async () => {
+    setLoading(true); // Exibe o loader
     const token = localStorage.getItem('token');
     if (!token) {
-        redirect('/login');
+      redirect('/login');
     } else {
-        const fd = new FormData();
-        acceptedFiles.forEach((file) => {
-          fd.append('image', file);
-        });
-        const selectedUser = JSON.parse(album.contratoEAluno);
-        fd.append('numeroContrato', selectedUser.numeroContrato);
-        fd.append('nomeAluno', selectedUser.nome);
-        Object.keys(eventTypes).forEach((key) => {
-          if (eventTypes[key]) {
-            fd.append('evento[]', key);
-          }
-        });
-        fd.append('tipoAlbum', album.tipoAlbum);
-        fd.append('minFotos', album.minFotos);
-        fd.append('maxFotos', album.maxFotos);
-        const response = await handleAddAlbum(token, fd);
-        if (response.status === 201) {
-          toast("Album adicionado com sucesso!")
-        } else {
-          toast("F")
+      const fd = new FormData();
+      acceptedFiles.forEach((file) => {
+        fd.append('image', file);
+      });
+      const selectedUser = JSON.parse(album.contratoEAluno);
+      fd.append('numeroContrato', selectedUser.numeroContrato);
+      fd.append('nomeAluno', selectedUser.nome);
+      Object.keys(eventTypes).forEach((key) => {
+        if (eventTypes[key]) {
+          fd.append('evento[]', key);
         }
+      });
+      fd.append('tipoAlbum', album.tipoAlbum);
+      fd.append('minFotos', album.minFotos);
+      const response = await handleAddAlbum(token, fd);
+      setLoading(false); // Oculta o loader
+      if (response.status === 201) {
+        toast("Album adicionado com sucesso!");
+      } else {
+        toast("Erro ao adicionar álbum");
+      }
     }
-  }
+  };
 
-  const {acceptedFiles, getRootProps, getInputProps} = useDropzone();
+  const { acceptedFiles, getRootProps, getInputProps } = useDropzone();
   const images = acceptedFiles.map(file => {
     const imageUrl = URL.createObjectURL(file);
     return (
       <div key={file.path}>
-        <Image 
-          src={imageUrl} 
-          alt={file.path} 
-          width={100} 
-          height={100} 
+        <Image
+          src={imageUrl}
+          alt={file.path}
+          width={100}
+          height={100}
         />
       </div>
     );
@@ -97,16 +99,20 @@ const AddProductPage = () => {
 
   return (
     <div className={styles.container}>
+      {loading && (
+        <div className={styles.loadingOverlay}>
+          <div className={styles.spinner}></div>
+        </div>
+      )}
       <div className={styles.form}>
         <select name="contratoEAluno" required onChange={handleChange}>
           <option value="">Selecione o Aluno do Álbum</option>
           {usersOption}
         </select>
         <div className={styles.numPageWrapper}>
-          <input className={styles.input} type="number" placeholder="Número mínimo de páginas" name="minFotos" required onChange={handleChange} />
-          <input className={styles.input} type="number" placeholder="Número máximo de páginas" name="maxFotos" required onChange={handleChange} />
+          <input className={styles.input} type="number" placeholder="Número máximo de páginas" name="minFotos" required onChange={handleChange} />
+          <input className={styles.input} type="text" placeholder="Tipo do Álbum" name="tipoAlbum" required onChange={handleChange} />
         </div>
-        <input className={styles.input} type="text" placeholder="Tipo do Álbum" name="tipoAlbum" required onChange={handleChange} />
         <div className={styles.checkboxArea}>
           <h4>Tipos de Evento:</h4>
           <div className={styles.wrapper}>
@@ -167,23 +173,22 @@ const AddProductPage = () => {
           </div>
         </div>
         <label className={styles.dropzone}>
-          <div {...getRootProps({className: 'dropzone'})}>
+          <div {...getRootProps({ className: 'dropzone' })}>
             <input {...getInputProps()} />
             {images.length === 0 && <p>Arraste as imagens aqui ou clique para selecioná-las</p>}
           </div>
           <aside>
             {images.length > 0 && (
-                <div className={styles.imagesWrapper}>
-                  <Image 
-                    src={'/addmais.png'} 
-                    alt={'noavatar'} 
-                    width={100} 
-                    height={100} 
-                  />
-                  {images}
-                </div>
-              )
-            }
+              <div className={styles.imagesWrapper}>
+                <Image
+                  src={'/addmais.png'}
+                  alt={'noavatar'}
+                  width={100}
+                  height={100}
+                />
+                {images}
+              </div>
+            )}
           </aside>
         </label>
         <button onClick={handleSubmit}>Adicionar Usuário</button>

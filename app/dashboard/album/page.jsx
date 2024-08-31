@@ -6,78 +6,76 @@ import { handleUpdateAlbum } from '../../lib';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { handlerUser } from "../../lib";
-import { redirect } from 'next/navigation'
+import { redirect } from 'next/navigation';
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
 
-
 const SingleAlbumPage = () => {
-
     const [album, setAlbum] = useState([]);
     const [users, setUsers] = useState([]);
     const [isUpdateImages, setIsUpdateImages] = useState(false);
+    const [loading, setLoading] = useState(false); // Estado para o loader
     const [eventTypes, setEventTypes] = useState({
-      Passeio: false,
-      Baile: false,
-      Missa: false,
-      Culto: false,
-      Colação: false,
-      Identificação: false,
+        Passeio: false,
+        Baile: false,
+        Missa: false,
+        Culto: false,
+        Colação: false,
+        Identificação: false,
     });
 
     useEffect(() => {
         const storedAlbum = JSON.parse(localStorage.getItem('album'));
         setAlbum(storedAlbum);
-    
+
         if (storedAlbum && storedAlbum.evento) {
-          const updatedEventTypes = { ...eventTypes };
-          storedAlbum.evento.forEach(evento => {
-            if (Object.prototype.hasOwnProperty.call(updatedEventTypes, evento)) {
-              updatedEventTypes[evento] = true;
-            }
-          });
-          setEventTypes(updatedEventTypes);
+            const updatedEventTypes = { ...eventTypes };
+            storedAlbum.evento.forEach(evento => {
+                if (Object.prototype.hasOwnProperty.call(updatedEventTypes, evento)) {
+                    updatedEventTypes[evento] = true;
+                }
+            });
+            setEventTypes(updatedEventTypes);
         }
 
         const handleUser = async () => {
-          const token = localStorage.getItem('token');
-          const response = await handlerUser(token);
-          setUsers(response);
+            const token = localStorage.getItem('token');
+            const response = await handlerUser(token);
+            setUsers(response);
         };
-    
-        handleUser();
 
+        handleUser();
     }, []);
 
     const handleFileInputChange = (event) => {
         const file = event.target.files[0];
         const reader = new FileReader();
-    
+
         reader.onloadend = () => {
             document.getElementById('batata').style.backgroundImage = `url(${reader.result})`;
             setAlbum(prevUser => ({
-            ...prevUser,
+                ...prevUser,
                 foto: reader.result,
                 file: file
             }));
         };
-    
+
         file && reader.readAsDataURL(file);
     };
 
-    const {acceptedFiles, getRootProps, getInputProps} = useDropzone();
+    const { acceptedFiles, getRootProps, getInputProps } = useDropzone();
     const images = acceptedFiles.map(file => {
-      const imageUrl = URL.createObjectURL(file);
-      return (
-        <div key={file.path}>
-          <Image 
-            src={imageUrl} 
-            alt={file.path} 
-            width={100} 
-            height={100} 
-          />
-        </div>
-      );
+        const imageUrl = URL.createObjectURL(file);
+        return (
+            <div key={file.path}>
+                <Image
+                    src={imageUrl}
+                    alt={file.path}
+                    width={100}
+                    height={100}
+                />
+            </div>
+        );
     });
 
     const handleChange = (e) => {
@@ -89,177 +87,177 @@ const SingleAlbumPage = () => {
     };
 
     const updateAlbum = async () => {
+        setLoading(true); // Exibe o loader
         const token = localStorage.getItem('token');
         if (!token) {
             redirect('/login');
         } else {
             const fd = new FormData();
             if (images.length > 0) {
-              acceptedFiles.forEach((file) => {
-                fd.append('image', file);
-              });
+                acceptedFiles.forEach((file) => {
+                    fd.append('image', file);
+                });
             }
             const selectedUser = album.contratoEAluno ? JSON.parse(album.contratoEAluno) : null;
             selectedUser ? fd.append('numeroContrato', selectedUser.numeroContrato) : fd.append('numeroContrato', album.numeroContrato);
             selectedUser ? fd.append('nomeAluno', selectedUser.nome) : fd.append('nomeAluno', album.nomeAluno);
             Object.keys(eventTypes).forEach((key) => {
-              if (eventTypes[key]) {
-                fd.append('evento[]', key);
-              }
+                if (eventTypes[key]) {
+                    fd.append('evento[]', key);
+                }
             });
             fd.append('tipoAlbum', album.tipoAlbum);
             fd.append('minFotos', album.minFotos);
-            fd.append('maxFotos', album.maxFotos);
             const response = await handleUpdateAlbum(token, fd);
+            setLoading(false);
             if (response.status === 200) {
-              toast("Album adicionado com sucesso!")
+                toast("Album adicionado com sucesso!");
             } else {
-              toast("F")
+                toast("Erro ao adicionar álbum");
             }
         }
     };
 
     const handleCheckboxChange = (event) => {
-      const { name, checked } = event.target;
-      setEventTypes(prevState => ({
-        ...prevState,
-        [name]: checked,
-      }));
+        const { name, checked } = event.target;
+        setEventTypes(prevState => ({
+            ...prevState,
+            [name]: checked,
+        }));
     };
 
     const handleToggleDropzone = () => {
-      setIsUpdateImages(true);
+        setIsUpdateImages(true);
     }
 
     const usersOption = users.map(user => {
-      const isSelected = (album.nomeAluno === user.nomeUsuario && album.numeroContrato === user.numeroContrato);
-      return (
-        <option
-          key={user.numeroContrato + user.nomeUsuario}
-          value={JSON.stringify({ nome: user.nomeUsuario, numeroContrato: user.numeroContrato })}
-          selected={isSelected}
-        >
-          {`${user.nomeUsuario} (${user.numeroContrato})`}
-        </option>
-      );
+        const isSelected = (album.nomeAluno === user.nomeUsuario && album.numeroContrato === user.numeroContrato);
+        return (
+            <option
+                key={user.numeroContrato + user.nomeUsuario}
+                value={JSON.stringify({ nome: user.nomeUsuario, numeroContrato: user.numeroContrato })}
+                selected={isSelected}
+            >
+                {`${user.nomeUsuario} (${user.numeroContrato})`}
+            </option>
+        );
     });
 
     const imagesWrapper = album.fotos && album.fotos.map((foto, index) => (
-      <Image 
-        key={index}
-        src={foto} 
-        alt='noavatar' 
-        width={150} 
-        height={150} 
-      />
+        <Image
+            key={index}
+            src={foto}
+            alt='noavatar'
+            width={150}
+            height={150}
+        />
     ));
 
     return (
         <div className={styles.container}>
+            {loading && <div className={styles.loader}>Carregando...</div>} {/* Loader */}
             <div>
                 {!isUpdateImages && <>
-                  <div className={styles.infoContainer}>
-                    {imagesWrapper}
-                  </div>
-                  <button onClick={handleToggleDropzone} className={styles.addButton}>Alterar fotos</button>
+                    <div className={styles.infoContainer}>
+                        {imagesWrapper}
+                    </div>
+                    <button onClick={handleToggleDropzone} className={styles.addButton}>Alterar fotos</button>
                 </>}
                 {isUpdateImages && <div className={styles.infoContainer}>
-                  <label className={styles.dropzone}>
-                    <div {...getRootProps({className: 'dropzone'})}>
-                      <input {...getInputProps()} />
-                      {images.length === 0 && <p>Arraste as imagens aqui ou clique para selecioná-las</p>}
-                    </div>
-                    <aside>
-                      {images.length > 0 && (
-                          <div className={styles.imagesWrapper}>
-                            <Image 
-                              src={'/addmais.png'} 
-                              alt={'noavatar'} 
-                              width={100} 
-                              height={100} 
-                            />
-                            {images}
-                          </div>
-                        )
-                      }
-                    </aside>
-                  </label>
-                  </div>}
+                    <label className={styles.dropzone}>
+                        <div {...getRootProps({ className: 'dropzone' })}>
+                            <input {...getInputProps()} />
+                            {images.length === 0 && <p>Arraste as imagens aqui ou clique para selecioná-las</p>}
+                        </div>
+                        <aside>
+                            {images.length > 0 && (
+                                <div className={styles.imagesWrapper}>
+                                    <Image
+                                        src={'/addmais.png'}
+                                        alt={'noavatar'}
+                                        width={100}
+                                        height={100}
+                                    />
+                                    {images}
+                                </div>
+                            )}
+                        </aside>
+                    </label>
+                </div>}
             </div>
             <div className={styles.formContainer}>
                 <div className={styles.form}>
                     <label>Aluno do Álbum:</label>
                     <select name="contratoEAluno" required onChange={handleChange}>
-                      {usersOption}
+                        {usersOption}
                     </select>
 
                     <label>Tipo do Álbum:</label>
                     <div className={styles.numPageWrapper}>
-                      <input className={styles.input} type="number" placeholder="Número mínimo de páginas" name="minFotos" value={album.minFotos} required onChange={handleChange} />
-                      <input className={styles.input} type="number" placeholder="Número máximo de páginas" name="maxFotos" value={album.maxFotos} required onChange={handleChange} />
+                        <input className={styles.input} type="number" placeholder="Número mínimo de páginas" name="minFotos" value={album.minFotos} required onChange={handleChange} />
                     </div>
 
                     <label>Tipo do Álbum:</label>
                     <input className={styles.input} type="text" value={album.tipoAlbum} placeholder="Tipo do Álbum" name="tipoAlbum" required onChange={handleChange} />
-                    
+
                     <div className={styles.checkboxArea}>
-                      <h4>Tipos de Evento:</h4>
-                      <div className={styles.wrapper}>
-                        <label>
-                          <input
-                            type="checkbox"
-                            name="Passeio"
-                            checked={eventTypes.Passeio}
-                            onChange={handleCheckboxChange}
-                          />
-                          Passeio
-                        </label>
-                        <label>
-                          <input
-                            type="checkbox"
-                            name="Baile"
-                            checked={eventTypes.Baile}
-                            onChange={handleCheckboxChange}
-                          />
-                          Baile
-                        </label>
-                        <label>
-                          <input
-                            type="checkbox"
-                            name="Missa"
-                            checked={eventTypes.Missa}
-                            onChange={handleCheckboxChange}
-                          />
-                          Missa
-                        </label>
-                        <label>
-                          <input
-                            type="checkbox"
-                            name="Culto"
-                            checked={eventTypes.Culto}
-                            onChange={handleCheckboxChange}
-                          />
-                          Culto
-                        </label>
-                        <label>
-                          <input
-                            type="checkbox"
-                            name="Colação"
-                            checked={eventTypes.Colação}
-                            onChange={handleCheckboxChange}
-                          />
-                          Colação
-                        </label>
-                        <label>
-                          <input
-                            type="checkbox"
-                            name="Identificação"
-                            checked={eventTypes.Identificação}
-                            onChange={handleCheckboxChange}
-                          />
-                          Identificação
-                        </label>
-                      </div>
+                        <h4>Tipos de Evento:</h4>
+                        <div className={styles.wrapper}>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="Passeio"
+                                    checked={eventTypes.Passeio}
+                                    onChange={handleCheckboxChange}
+                                />
+                                Passeio
+                            </label>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="Baile"
+                                    checked={eventTypes.Baile}
+                                    onChange={handleCheckboxChange}
+                                />
+                                Baile
+                            </label>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="Missa"
+                                    checked={eventTypes.Missa}
+                                    onChange={handleCheckboxChange}
+                                />
+                                Missa
+                            </label>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="Culto"
+                                    checked={eventTypes.Culto}
+                                    onChange={handleCheckboxChange}
+                                />
+                                Culto
+                            </label>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="Colação"
+                                    checked={eventTypes.Colação}
+                                    onChange={handleCheckboxChange}
+                                />
+                                Colação
+                            </label>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="Identificação"
+                                    checked={eventTypes.Identificação}
+                                    onChange={handleCheckboxChange}
+                                />
+                                Identificação
+                            </label>
+                        </div>
                     </div>
 
                     <button onClick={updateAlbum}>Atualizar Dados</button>

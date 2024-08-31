@@ -21,7 +21,7 @@ const Dashboard = () => {
       const res = await validate(token);
       !res && router.push('/login');
     };
-    // tokenVerify(token);
+    //tokenVerify(token);
     const fetchData = async () => {
       const allUsersData = await handlerUser(localStorage.getItem('token'));
       setCards([

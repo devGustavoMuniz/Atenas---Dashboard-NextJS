@@ -42,11 +42,11 @@ const ProductsPage = () => {
     } else {
       const response = await handleDeleteAlbum(token, { nomeAluno, numeroContrato });
       if (response.status === 200) {
-        toast("Usuário excluído com sucesso!");
+        toast("Álbum excluído com sucesso!");
         const updatedResponse = await handlerAlbum(token);
         setAlbums(updatedResponse);
       } else {
-        toast("Erro ao excluir usuário");
+        toast("Erro ao excluir álbum");
       }
     }
   };

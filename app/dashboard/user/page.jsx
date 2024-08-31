@@ -101,6 +101,9 @@ const SingleUserPage = () => {
                         <option value={false}>Não</option>
                     </select>
 
+                    <label>Alterar Senha:</label>
+                    <input type="text" name="senha" onChange={handleChange} />
+
                     <button onClick={updateUser}>Atualizar Dados</button>
                 </div>
             </div>
