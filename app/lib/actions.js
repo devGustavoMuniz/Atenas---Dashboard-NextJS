@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-const baseUrl = 'https://atenas-formaturas-5jarkngkqq-rj.a.run.app';
+const baseUrl = 'https://atenas-formaturas-425248033078.southamerica-east1.run.app/';
 
 export const login = async ({ username, password }) => {
+  console.log(`base url ${baseUrl}`);
     const response = await axios.post(`${baseUrl}/v1/autenticar`, {}, {
       auth: {
         username,
