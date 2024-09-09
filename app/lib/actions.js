@@ -3,8 +3,15 @@ import axios from 'axios';
 const baseUrl = 'https://atenas-formaturas-5jarkngkqq-rj.a.run.app';
 
 export const login = async ({ username, password }) => {
-    const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/ditto`, {});
-    console.log(`res: `, response);
+  console.log(`base url ${baseUrl}`);
+    const response = await axios.post(`${baseUrl}/v1/autenticar`, {}, {
+      auth: {
+        username,
+        password
+      }
+    });
+
+    return response.data;
 };
 
 export const validate = async (token) => {
