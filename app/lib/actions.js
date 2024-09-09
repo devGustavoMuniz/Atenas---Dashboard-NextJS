@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseUrl = 'https://atenas-formaturas-425248033078.southamerica-east1.run.app/';
+const baseUrl = 'https://atenas-formaturas-5jarkngkqq-rj.a.run.app';
 
 export const login = async ({ username, password }) => {
   console.log(`base url ${baseUrl}`);
