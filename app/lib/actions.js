@@ -30,11 +30,12 @@ export const validate = async (token) => {
 
 export const getAllUsers = async (token) => {
   try{
-    const res = await axios.get(`${baseUrl}/v1/user/getAll/1/10`, {
+    const res = await axios.get(`${baseUrl}/v1/user/getAll`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     });
+    console.log('res', res)
     return res;
   } catch (err) {
     console.error('err: ', err);
@@ -43,6 +44,10 @@ export const getAllUsers = async (token) => {
 
 export const addUser = async (token, fd) => {
   try{
+    console.log('Conteúdo completo do FormData:');
+    fd.forEach((value, key) => {
+      console.log(`Key: ${key}, Value:`, value);
+    });
     const response = await axios.post(`${baseUrl}/v1/user`, fd, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -57,6 +62,10 @@ export const addUser = async (token, fd) => {
 
 export const updateUser = async (token, fd) => {
   try{
+    console.log('Conteúdo completo do FormData:');
+    fd.forEach((value, key) => {
+      console.log(`Key: ${key}, Value:`, value);
+    });
     return await axios.put(`${baseUrl}/v1/user`, fd, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -83,6 +92,7 @@ export const deleteUser = async (token, {nomeUsuario, email}) => {
 
 export const addAlbum = async (token, fd) => {
   try{
+
     const res = await axios.post(`${baseUrl}/v1/albuns`, fd, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -97,11 +107,12 @@ export const addAlbum = async (token, fd) => {
 
 export const getAllAlbums = async (token) => {
   try{
-    const res = await axios.get(`${baseUrl}/v1/albuns/getAll/1/10`, {
+    const res = await axios.get(`${baseUrl}/v1/albuns/getAll`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     });
+
     return res;
   } catch (err) {
     console.error('err: ', err);
@@ -122,6 +133,10 @@ export const deleteAlbum = async (token, {nomeAluno, numeroContrato}) => {
 };
 
 export const updateAlbum = async (token, fd) => {
+  console.log('Conteúdo completo do FormData:');
+    fd.forEach((value, key) => {
+      console.log(`Key: ${key}, Value:`, value);
+    });
   try{
     return await axios.put(`${baseUrl}/v1/albuns`, fd, {
       headers: {

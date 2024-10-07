@@ -57,24 +57,24 @@
   align-items: center;
 }
 
-.profilePhotoWrapper div {
+.batata {
   width: 250px;
   height: 250px;
   margin-bottom: 15px;
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
-  background-image: url('../../../../../public/noavatar.png');
   border-radius: 5px;
 }
 
-.profilePhotoWrapper label {
+.profilePhotoWrapper label,
+.profilePhotoWrapper button {
   width: 100%;
   padding: 20px;
   background-color: #fcf119;
   color: black !important;
+  font-size: 16px;
   text-align: center;
-  color: var(--text);
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -95,4 +95,12 @@
 
 .inputPassword {
   width: 100%!important;
+}
+
+.cropperContainer {
+  width: 250px;
+  height: 250px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  overflow: hidden;
 }

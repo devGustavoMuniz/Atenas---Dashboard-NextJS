@@ -83,11 +83,11 @@ color: black !important;
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
-  background-image: url('../../../../../public/noavatar.png');
   border-radius: 5px;
 }
 
-.profilePhotoWrapper label {
+.profilePhotoWrapper label,
+.profilePhotoWrapper button {
   width: 100%;
   padding: 30px;
   background-color: #fcf119;

@@ -34,7 +34,7 @@ const Transactions = () => {
               <td>
                 <div className={styles.user}>
                   <Image
-                    src={user.foto || '/noavatar.png'}
+                    src={user.foto?.fotoAssinada || '/noavatar.png'}
                     alt=""
                     width={40}
                     height={40}

@@ -69,6 +69,16 @@
   gap: 10px;
 }
 
+.dropzonesSection {
+  display: block;
+  width: 100%;
+}
+
+.dropzonesSection label {
+  display: block;
+  width: 100%;
+}
+
 .numPageWrapper {
   display: flex;
   justify-content: space-between;

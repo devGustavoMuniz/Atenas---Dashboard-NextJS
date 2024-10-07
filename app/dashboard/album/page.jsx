@@ -12,6 +12,7 @@ import Image from 'next/image';
 
 const SingleAlbumPage = () => {
     const [album, setAlbum] = useState([]);
+    const [fotosPorEvento, setFotosPorEvento] = useState([]);
     const [users, setUsers] = useState([]);
     const [isUpdateImages, setIsUpdateImages] = useState(false);
     const [loading, setLoading] = useState(false); // Estado para o loader
@@ -27,7 +28,8 @@ const SingleAlbumPage = () => {
     useEffect(() => {
         const storedAlbum = JSON.parse(localStorage.getItem('album'));
         setAlbum(storedAlbum);
-
+        console.log('album', storedAlbum);
+    
         if (storedAlbum && storedAlbum.evento) {
             const updatedEventTypes = { ...eventTypes };
             storedAlbum.evento.forEach(evento => {
@@ -37,15 +39,41 @@ const SingleAlbumPage = () => {
             });
             setEventTypes(updatedEventTypes);
         }
-
+    
+        const groupFotosByEvent = (fotos, eventos) => {
+            const groupedFotos = {};
+    
+            fotos.forEach((foto, index) => {
+                const eventFromFilename = foto.filename.split('/')[1].split('~')[0];
+    
+                const eventFromList = eventos[index];
+    
+                const eventName = eventFromFilename || eventFromList;
+    
+                if (!groupedFotos[eventName]) {
+                    groupedFotos[eventName] = [];
+                }
+                groupedFotos[eventName].push(foto);
+            });
+    
+            return groupedFotos;
+        };
+    
+        if (storedAlbum && storedAlbum.fotos && storedAlbum.evento) {
+            const fotosPorEvento = groupFotosByEvent(storedAlbum.fotos, storedAlbum.evento);
+            console.log('Fotos separadas por evento', fotosPorEvento);
+            setFotosPorEvento(fotosPorEvento); // Supondo que você tenha um state para armazenar isso
+        }
+    
         const handleUser = async () => {
             const token = localStorage.getItem('token');
             const response = await handlerUser(token);
             setUsers(response);
         };
-
+    
         handleUser();
     }, []);
+    
 
     const handleFileInputChange = (event) => {
         const file = event.target.files[0];
@@ -156,55 +184,28 @@ const SingleAlbumPage = () => {
     return (
         <div className={styles.container}>
             {loading && <div className={styles.loader}>Carregando...</div>} {/* Loader */}
-            <div>
-                {!isUpdateImages && <>
-                    <div className={styles.infoContainer}>
-                        {imagesWrapper}
-                    </div>
-                    <button onClick={handleToggleDropzone} className={styles.addButton}>Alterar fotos</button>
-                </>}
-                {isUpdateImages && <div className={styles.infoContainer}>
-                    <label className={styles.dropzone}>
-                        <div {...getRootProps({ className: 'dropzone' })}>
-                            <input {...getInputProps()} />
-                            {images.length === 0 && <p>Arraste as imagens aqui ou clique para selecioná-las</p>}
-                        </div>
-                        <aside>
-                            {images.length > 0 && (
-                                <div className={styles.imagesWrapper}>
-                                    <Image
-                                        src={'/addmais.png'}
-                                        alt={'noavatar'}
-                                        width={100}
-                                        height={100}
-                                    />
-                                    {images}
-                                </div>
-                            )}
-                        </aside>
-                    </label>
-                </div>}
-            </div>
+
             <div className={styles.formContainer}>
                 <div className={styles.form}>
                     <label>Aluno do Álbum:</label>
-                    <select name="contratoEAluno" required onChange={handleChange}>
+                    <select disabled name="contratoEAluno" required onChange={handleChange}>
                         {usersOption}
                     </select>
 
                     <label>Tipo do Álbum:</label>
                     <div className={styles.numPageWrapper}>
-                        <input className={styles.input} type="number" placeholder="Número mínimo de páginas" name="minFotos" value={album.minFotos} required onChange={handleChange} />
+                        <input disabled className={styles.input} type="number" placeholder="Número mínimo de páginas" name="minFotos" value={album.minFotos} required onChange={handleChange} />
                     </div>
 
                     <label>Tipo do Álbum:</label>
-                    <input className={styles.input} type="text" value={album.tipoAlbum} placeholder="Tipo do Álbum" name="tipoAlbum" required onChange={handleChange} />
+                    <input disabled className={styles.input} type="text" value={album.tipoAlbum} placeholder="Tipo do Álbum" name="tipoAlbum" required onChange={handleChange} />
 
                     <div className={styles.checkboxArea}>
                         <h4>Tipos de Evento:</h4>
                         <div className={styles.wrapper}>
                             <label>
                                 <input
+                                    disabled
                                     type="checkbox"
                                     name="Passeio"
                                     checked={eventTypes.Passeio}
@@ -214,6 +215,7 @@ const SingleAlbumPage = () => {
                             </label>
                             <label>
                                 <input
+                                    disabled
                                     type="checkbox"
                                     name="Baile"
                                     checked={eventTypes.Baile}
@@ -223,6 +225,7 @@ const SingleAlbumPage = () => {
                             </label>
                             <label>
                                 <input
+                                    disabled
                                     type="checkbox"
                                     name="Missa"
                                     checked={eventTypes.Missa}
@@ -232,6 +235,7 @@ const SingleAlbumPage = () => {
                             </label>
                             <label>
                                 <input
+                                    disabled
                                     type="checkbox"
                                     name="Culto"
                                     checked={eventTypes.Culto}
@@ -241,6 +245,7 @@ const SingleAlbumPage = () => {
                             </label>
                             <label>
                                 <input
+                                    disabled
                                     type="checkbox"
                                     name="Colação"
                                     checked={eventTypes.Colação}
@@ -250,6 +255,7 @@ const SingleAlbumPage = () => {
                             </label>
                             <label>
                                 <input
+                                    disabled
                                     type="checkbox"
                                     name="Identificação"
                                     checked={eventTypes.Identificação}
@@ -260,15 +266,168 @@ const SingleAlbumPage = () => {
                         </div>
                     </div>
 
-                    <button onClick={updateAlbum}>Atualizar Dados</button>
+                    {/* <button onClick={updateAlbum}>Atualizar Dados</button> */}
+                </div>
+                <div>
+                    {!isUpdateImages && (
+                        <>
+                            {/* Passeio */}
+                            {fotosPorEvento.Passeio && fotosPorEvento.Passeio.length > 0 && (
+                                <div className={styles.eventSection}>
+                                    <p>Passeio</p>
+                                    <div className={styles.fotoContainer}>
+                                        {fotosPorEvento.Passeio.map((foto, index) => {
+                                            const filename = foto.filename.split('~')[1];
+
+                                            return (
+                                                <div key={index} className={styles.fotoItem}>
+                                                    <Image
+                                                        src={foto.fotoAssinada}
+                                                        alt={`Foto Passeio ${index}`}
+                                                        width={150}
+                                                        height={150}
+                                                    />
+                                                    <p className={styles.filename}>{filename}</p> {/* Exibe o nome do arquivo aqui */}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+        
+                            {/* Baile */}
+                            {fotosPorEvento.Baile && fotosPorEvento.Baile.length > 0 && (
+                                <div className={styles.eventSection}>
+                                    <p>Baile</p>
+                                    <div className={styles.fotoContainer}>
+                                        {fotosPorEvento.Baile.map((foto, index) => {
+                                            const filename = foto.filename.split('~')[1];
+
+                                            return (
+                                                <div key={index} className={styles.fotoItem}>
+                                                    <Image
+                                                        src={foto.fotoAssinada}
+                                                        alt={`Foto Baile ${index}`}
+                                                        width={150}
+                                                        height={150}
+                                                    />
+                                                    <p className={styles.filename}>{filename}</p> {/* Exibe o nome do arquivo aqui */}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+        
+                            {/* Missa */}
+                            {fotosPorEvento.Missa && fotosPorEvento.Missa.length > 0 && (
+                                <div className={styles.eventSection}>
+                                    <p>Missa</p>
+                                    <div className={styles.fotoContainer}>
+                                        {fotosPorEvento.Missa.map((foto, index) => {
+                                            const filename = foto.filename.split('~')[1];
+
+                                            return (
+                                                <div key={index} className={styles.fotoItem}>
+                                                    <Image
+                                                        src={foto.fotoAssinada}
+                                                        alt={`Foto Missa ${index}`}
+                                                        width={150}
+                                                        height={150}
+                                                    />
+                                                    <p className={styles.filename}>{filename}</p> {/* Exibe o nome do arquivo aqui */}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+        
+                            {/* Culto */}
+                            {fotosPorEvento.Culto && fotosPorEvento.Culto.length > 0 && (
+                                <div className={styles.eventSection}>
+                                    <p>Culto</p>
+                                    <div className={styles.fotoContainer}>
+                                        {fotosPorEvento.Culto.map((foto, index) => {
+                                            const filename = foto.filename.split('~')[1];
+
+                                            return (
+                                                <div key={index} className={styles.fotoItem}>
+                                                    <Image
+                                                        src={foto.fotoAssinada}
+                                                        alt={`Foto Culto ${index}`}
+                                                        width={150}
+                                                        height={150}
+                                                    />
+                                                    <p className={styles.filename}>{filename}</p> {/* Exibe o nome do arquivo aqui */}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+        
+                            {/* Colação */}
+                            {fotosPorEvento.Colação && fotosPorEvento.Colação.length > 0 && (
+                                <div className={styles.eventSection}>
+                                    <p>Colação</p>
+                                    <div className={styles.fotoContainer}>
+                                        {fotosPorEvento.Colação.map((foto, index) => {
+                                            const filename = foto.filename.split('~')[1];
+
+                                            return (
+                                                <div key={index} className={styles.fotoItem}>
+                                                    <Image
+                                                        src={foto.fotoAssinada}
+                                                        alt={`Foto Colação ${index}`}
+                                                        width={150}
+                                                        height={150}
+                                                    />
+                                                    <p className={styles.filename}>{filename}</p> {/* Exibe o nome do arquivo aqui */}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+        
+                            {/* Identificação */}
+                            {fotosPorEvento.Identificação && fotosPorEvento.Identificação.length > 0 && (
+                                <div className={styles.eventSection}>
+                                    <p>Identificação</p>
+                                    <div className={styles.fotoContainer}>
+                                        {fotosPorEvento.Identificação.map((foto, index) => {
+                                            const filename = foto.filename.split('~')[1];
+
+                                            return (
+                                                <div key={index} className={styles.fotoItem}>
+                                                    <Image
+                                                        src={foto.fotoAssinada}
+                                                        alt={`Foto Colação ${index}`}
+                                                        width={150}
+                                                        height={150}
+                                                    />
+                                                    <p className={styles.filename}>{filename}</p> {/* Exibe o nome do arquivo aqui */}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+                        </>
+                    )}
                 </div>
             </div>
+            
+           
+    
             <ToastContainer
                 position="top-center"
                 theme="dark"
             />
         </div>
     );
+    
 };
 
 export default SingleAlbumPage;

@@ -1,7 +1,7 @@
 "use client";
 
 import styles from "../../../ui/dashboard/products/addProduct/addProduct.module.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { redirect } from 'next/navigation';
@@ -12,7 +12,7 @@ import Image from 'next/image';
 const AddProductPage = () => {
   const [album, setAlbum] = useState([]);
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(false); // Estado para o loader
+  const [loading, setLoading] = useState(false);
   const [eventTypes, setEventTypes] = useState({
     Passeio: false,
     Baile: false,
@@ -20,6 +20,15 @@ const AddProductPage = () => {
     Culto: false,
     Colação: false,
     Identificação: false,
+  });
+
+  const [files, setFiles] = useState({
+    Passeio: [],
+    Baile: [],
+    Missa: [],
+    Culto: [],
+    Colação: [],
+    Identificação: [],
   });
 
   useEffect(() => {
@@ -41,27 +50,37 @@ const AddProductPage = () => {
   };
 
   const handleSubmit = async () => {
-    setLoading(true); // Exibe o loader
+    setLoading(true);
     const token = localStorage.getItem('token');
     if (!token) {
       redirect('/login');
     } else {
       const fd = new FormData();
-      acceptedFiles.forEach((file) => {
-        fd.append('image', file);
+      
+      // Para cada evento, adiciona as imagens com o prefixo do evento
+      Object.keys(files).forEach(event => {
+        files[event].forEach((file, index) => {
+          const customFileName = `${event}~${file.name}`;
+          
+          const customFile = new File([file], customFileName, { type: file.type });
+          
+          fd.append('image', customFile);
+          
+          fd.append('evento[]', event);
+        });
       });
-      const selectedUser = JSON.parse(album.contratoEAluno);
-      fd.append('numeroContrato', selectedUser.numeroContrato);
-      fd.append('nomeAluno', selectedUser.nome);
-      Object.keys(eventTypes).forEach((key) => {
-        if (eventTypes[key]) {
-          fd.append('evento[]', key);
-        }
-      });
+  
+      // const selectedUser = JSON.parse(album.contratoEAluno);
+      fd.append('numeroContrato', 2323);
+      fd.append('nomeAluno', 'teste');
       fd.append('tipoAlbum', album.tipoAlbum);
       fd.append('minFotos', album.minFotos);
+  
+      // Envia a requisição
       const response = await handleAddAlbum(token, fd);
-      setLoading(false); // Oculta o loader
+      setLoading(false); 
+
+      console.log('rees > ', response);
       if (response.status === 201) {
         toast("Album adicionado com sucesso!");
       } else {
@@ -70,25 +89,6 @@ const AddProductPage = () => {
     }
   };
 
-  const { acceptedFiles, getRootProps, getInputProps } = useDropzone();
-  const images = acceptedFiles.map(file => {
-    const imageUrl = URL.createObjectURL(file);
-    return (
-      <div key={file.path}>
-        <Image
-          src={imageUrl}
-          alt={file.path}
-          width={100}
-          height={100}
-        />
-      </div>
-    );
-  });
-
-  const usersOption = users.map(user => (
-    <option key={user.numeroContrato + user.nomeUsuario} value={JSON.stringify({ nome: user.nomeUsuario, numeroContrato: user.numeroContrato })}>{`${user.nomeUsuario} (${user.numeroContrato})`}</option>
-  ));
-
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
     setEventTypes(prevState => ({
@@ -96,6 +96,60 @@ const AddProductPage = () => {
       [name]: checked,
     }));
   };
+
+  const onDrop = useCallback((acceptedFiles, eventType) => {
+    setFiles(prevFiles => ({
+      ...prevFiles,
+      [eventType]: [...prevFiles[eventType], ...acceptedFiles],
+    }));
+  }, []);
+
+  const dropzones = Object.keys(eventTypes).reduce((acc, eventType) => {
+    const { getRootProps, getInputProps } = useDropzone({
+      onDrop: (acceptedFiles) => onDrop(acceptedFiles, eventType)
+    });
+
+    const images = files[eventType].map(file => {
+      const imageUrl = URL.createObjectURL(file);
+      return (
+        <div key={file.path}>
+          <Image
+            src={imageUrl}
+            alt={file.path}
+            width={100}
+            height={100}
+          />
+        </div>
+      );
+    });
+
+    if (eventTypes[eventType]) {
+      acc.push(
+        <div key={eventType}>
+          <h4>{eventType}</h4>
+          <label className={styles.dropzone}>
+            <div {...getRootProps({ className: 'dropzone' })}>
+              <input {...getInputProps()} />
+              {images.length === 0 && <p>Arraste as imagens aqui ou clique para selecioná-las</p>}
+            </div>
+            <aside>
+              {images.length > 0 && (
+                <div className={styles.imagesWrapper}>
+                  {images}
+                </div>
+              )}
+            </aside>
+          </label>
+        </div>
+      );
+    }
+
+    return acc;
+  }, []);
+
+  const usersOption = users.map(user => (
+    <option key={user.numeroContrato + user.nomeUsuario} value={JSON.stringify({ nome: user.nomeUsuario, numeroContrato: user.numeroContrato })}>{`${user.nomeUsuario} (${user.numeroContrato})`}</option>
+  ));
 
   return (
     <div className={styles.container}>
@@ -116,87 +170,33 @@ const AddProductPage = () => {
         <div className={styles.checkboxArea}>
           <h4>Tipos de Evento:</h4>
           <div className={styles.wrapper}>
-            <label>
-              <input
-                type="checkbox"
-                name="Passeio"
-                checked={eventTypes.Passeio}
-                onChange={handleCheckboxChange}
-              />
-              Passeio
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                name="Baile"
-                checked={eventTypes.Baile}
-                onChange={handleCheckboxChange}
-              />
-              Baile
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                name="Missa"
-                checked={eventTypes.Missa}
-                onChange={handleCheckboxChange}
-              />
-              Missa
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                name="Culto"
-                checked={eventTypes.Culto}
-                onChange={handleCheckboxChange}
-              />
-              Culto
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                name="Colação"
-                checked={eventTypes.Colação}
-                onChange={handleCheckboxChange}
-              />
-              Colação
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                name="Identificação"
-                checked={eventTypes.Identificação}
-                onChange={handleCheckboxChange}
-              />
-              Identificação
-            </label>
+            {Object.keys(eventTypes).map((event) => (
+              <div key={event}>
+                <label>
+                  <input
+                    type="checkbox"
+                    name={event}
+                    checked={eventTypes[event]}
+                    onChange={handleCheckboxChange}
+                  />
+                  {event}
+                </label>
+              </div>
+            ))}
           </div>
         </div>
-        <label className={styles.dropzone}>
-          <div {...getRootProps({ className: 'dropzone' })}>
-            <input {...getInputProps()} />
-            {images.length === 0 && <p>Arraste as imagens aqui ou clique para selecioná-las</p>}
-          </div>
-          <aside>
-            {images.length > 0 && (
-              <div className={styles.imagesWrapper}>
-                <Image
-                  src={'/addmais.png'}
-                  alt={'noavatar'}
-                  width={100}
-                  height={100}
-                />
-                {images}
-              </div>
-            )}
-          </aside>
-        </label>
-        <button onClick={handleSubmit}>Adicionar Usuário</button>
+        {/* Dropzones Section */}
+        <div className={styles.dropzonesSection}>
+          {dropzones.length > 0 && (
+            <>
+              <h4>Eventos Selecionados:</h4>
+              {dropzones}
+            </>
+          )}
+        </div>
+        <button onClick={handleSubmit}>Adicionar Álbum</button>
       </div>
-      <ToastContainer
-        position="top-center"
-        theme="dark"
-      />
+      <ToastContainer position="top-center" theme="dark" />
     </div>
   );
 };
