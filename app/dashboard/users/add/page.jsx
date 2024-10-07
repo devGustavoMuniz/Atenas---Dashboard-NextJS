@@ -39,15 +39,18 @@ const AddUserPage = () => {
     }
   };
 
-  const blobUrlToBase64 = async (blobUrl) => {
-    const response = await fetch(blobUrl);
-    const blob = await response.blob();
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
+  const blobUrlToBase64 = (blobUrl, callback) => {
+    if (typeof window !== "undefined") {
+        fetch(blobUrl)
+            .then(response => response.blob())
+            .then(blob => {
+                const reader = new FileReader();
+                reader.onloadend = () => callback(null, reader.result);
+                reader.onerror = (err) => callback(err, null);
+                reader.readAsDataURL(blob);
+            })
+            .catch(err => callback(err, null));
+    }
   };
   
 
@@ -77,17 +80,20 @@ const AddUserPage = () => {
   };
 
   const dataURLtoFile = (dataurl, filename) => {
-    console.log(`data url ${dataurl}`);
-    const arr = dataurl.split(','), 
-          mime = arr[0].match(/:(.*?);/)[1],
-          bstr = atob(arr[1]), 
-          u8arr = new Uint8Array(bstr.length);
-          
-    for (let i = 0; i < bstr.length; i++) {
-      u8arr[i] = bstr.charCodeAt(i);
+    if (typeof window !== "undefined") {
+        const arr = dataurl.split(',');
+        const mime = arr[0].match(/:(.*?);/)[1];
+        const binary = atob(arr[1]);
+        let binaryString = '';
+
+        // Criação da string binária
+        for (let i = 0; i < binary.length; i++) {
+            binaryString += String.fromCharCode(binary.charCodeAt(i));
+        }
+
+        // Criação do arquivo usando a string binária em vez de Uint8Array
+        return new File([binaryString], filename, { type: mime });
     }
-    
-    return new File([u8arr], filename, { type: mime });
   };
   
 

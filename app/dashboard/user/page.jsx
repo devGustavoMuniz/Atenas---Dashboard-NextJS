@@ -1,5 +1,7 @@
 "use client";
 
+// Removi as polyfills de Promise e Uint8Array, pois vamos evitar o uso dessas funções diretamente.
+
 import { useEffect, useState, useCallback } from 'react';
 import styles from "../../ui/dashboard/users/singleUser/singleUser.module.css";
 import { handleUpdateUser } from '../../lib';
@@ -32,11 +34,11 @@ const SingleUserPage = () => {
               ...prevUser,
               file: file
             }));
-          };
+        };
       
-          if (file) {
+        if (file) {
             reader.readAsDataURL(file); // Lê o arquivo como base64
-          }
+        }
     };
 
     const handleChange = (e) => {
@@ -51,48 +53,62 @@ const SingleUserPage = () => {
         setCroppedAreaPixels(croppedAreaPixels);
     }, []);
 
-    const blobUrlToBase64 = async (blobUrl) => {
-        const response = await fetch(blobUrl);
-        const blob = await response.blob();
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.onerror = reject;
-          reader.readAsDataURL(blob);
-        });
-      };
-      
-    
-      const showCroppedImage = useCallback(async () => {
-        try {
-          const croppedImgBlobUrl = await getCroppedImg(imageSrc, croppedAreaPixels);
-          const croppedImgBase64 = await blobUrlToBase64(croppedImgBlobUrl);
-          setCroppedImage(croppedImgBase64);
-          setUser(prevUser => ({
-            ...prevUser,
-            foto: croppedImgBase64,
-          }));
-          toast("Imagem cortada com sucesso!");
-          setImageSrc(null);
-        } catch (e) {
-          console.error(e);
-          toast("Erro ao cortar a imagem");
+    // Função modificada para evitar o uso de Promise, utilizando callbacks
+    const blobUrlToBase64 = (blobUrl, callback) => {
+        if (typeof window !== "undefined") {
+            fetch(blobUrl)
+                .then(response => response.blob())
+                .then(blob => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => callback(null, reader.result);
+                    reader.onerror = (err) => callback(err, null);
+                    reader.readAsDataURL(blob);
+                })
+                .catch(err => callback(err, null));
         }
-      }, [croppedAreaPixels, imageSrc]);
+    };
 
-      const dataURLtoFile = (dataurl, filename) => {
-        console.log(`data url ${filename}`);
-        const arr = dataurl.split(','), 
-              mime = arr[0].match(/:(.*?);/)[1],
-              bstr = atob(arr[1]), 
-              u8arr = new Uint8Array(bstr.length);
-              
-        for (let i = 0; i < bstr.length; i++) {
-          u8arr[i] = bstr.charCodeAt(i);
+    const showCroppedImage = useCallback(() => {
+        getCroppedImg(imageSrc, croppedAreaPixels)
+            .then(croppedImgBlobUrl => {
+                blobUrlToBase64(croppedImgBlobUrl, (err, croppedImgBase64) => {
+                    if (err) {
+                        console.error(err);
+                        toast("Erro ao cortar a imagem");
+                        return;
+                    }
+                    setCroppedImage(croppedImgBase64);
+                    setUser(prevUser => ({
+                        ...prevUser,
+                        foto: croppedImgBase64,
+                    }));
+                    toast("Imagem cortada com sucesso!");
+                    setImageSrc(null);
+                });
+            })
+            .catch(e => {
+                console.error(e);
+                toast("Erro ao cortar a imagem");
+            });
+    }, [croppedAreaPixels, imageSrc]);
+
+    // Função modificada para evitar o uso de Uint8Array
+    const dataURLtoFile = (dataurl, filename) => {
+        if (typeof window !== "undefined") {
+            const arr = dataurl.split(',');
+            const mime = arr[0].match(/:(.*?);/)[1];
+            const binary = atob(arr[1]);
+            let binaryString = '';
+
+            // Criação da string binária
+            for (let i = 0; i < binary.length; i++) {
+                binaryString += String.fromCharCode(binary.charCodeAt(i));
+            }
+
+            // Criação do arquivo usando a string binária em vez de Uint8Array
+            return new File([binaryString], filename, { type: mime });
         }
-        
-        return new File([u8arr], filename, { type: mime });
-      };
+    };
 
     const updateUser = async () => {
         const token = localStorage.getItem('token');
@@ -100,7 +116,9 @@ const SingleUserPage = () => {
             redirect('/login');
         } else {
             const fd = new FormData();
-            fd.append('image', croppedImage ? dataURLtoFile(croppedImage, 'profile~'+user.nomeUsuario+'.jpg') : user.file || user.foto.fotoAssinada);
+            if (croppedImage || user.file) {
+                fd.append('image', dataURLtoFile(croppedImage, 'profile~' + user.nomeUsuario + '.jpg') || user.file);
+            }   
             fd.append('numeroContrato', String(user.numeroContrato));
             fd.append('nomeUsuario', String(user.nomeUsuario));
             fd.append('turma', String(user.turma));

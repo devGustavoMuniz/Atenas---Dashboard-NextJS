@@ -5,9 +5,9 @@ import { useState, useEffect, useCallback } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { redirect } from 'next/navigation';
-import { useDropzone } from 'react-dropzone';
 import { handleAddAlbum, handlerUser } from "../../../lib";
 import Image from 'next/image';
+import { useDropzone } from 'react-dropzone';
 
 const AddProductPage = () => {
   const [album, setAlbum] = useState([]);
@@ -57,30 +57,23 @@ const AddProductPage = () => {
     } else {
       const fd = new FormData();
       
-      // Para cada evento, adiciona as imagens com o prefixo do evento
       Object.keys(files).forEach(event => {
         files[event].forEach((file, index) => {
           const customFileName = `${event}~${file.name}`;
-          
           const customFile = new File([file], customFileName, { type: file.type });
-          
           fd.append('image', customFile);
-          
           fd.append('evento[]', event);
         });
       });
   
-      // const selectedUser = JSON.parse(album.contratoEAluno);
       fd.append('numeroContrato', 2323);
       fd.append('nomeAluno', 'teste');
       fd.append('tipoAlbum', album.tipoAlbum);
       fd.append('minFotos', album.minFotos);
   
-      // Envia a requisição
       const response = await handleAddAlbum(token, fd);
       setLoading(false); 
 
-      console.log('rees > ', response);
       if (response.status === 201) {
         toast("Album adicionado com sucesso!");
       } else {
@@ -104,12 +97,13 @@ const AddProductPage = () => {
     }));
   }, []);
 
-  const dropzones = Object.keys(eventTypes).reduce((acc, eventType) => {
+  // Componente separado para Dropzone
+  const DropzoneField = ({ eventType, files, onDrop }) => {
     const { getRootProps, getInputProps } = useDropzone({
-      onDrop: (acceptedFiles) => onDrop(acceptedFiles, eventType)
+      onDrop: (acceptedFiles) => onDrop(acceptedFiles, eventType),
     });
 
-    const images = files[eventType].map(file => {
+    const images = files.map(file => {
       const imageUrl = URL.createObjectURL(file);
       return (
         <div key={file.path}>
@@ -123,29 +117,25 @@ const AddProductPage = () => {
       );
     });
 
-    if (eventTypes[eventType]) {
-      acc.push(
-        <div key={eventType}>
-          <h4>{eventType}</h4>
-          <label className={styles.dropzone}>
-            <div {...getRootProps({ className: 'dropzone' })}>
-              <input {...getInputProps()} />
-              {images.length === 0 && <p>Arraste as imagens aqui ou clique para selecioná-las</p>}
-            </div>
-            <aside>
-              {images.length > 0 && (
-                <div className={styles.imagesWrapper}>
-                  {images}
-                </div>
-              )}
-            </aside>
-          </label>
-        </div>
-      );
-    }
-
-    return acc;
-  }, []);
+    return (
+      <div key={eventType}>
+        <h4>{eventType}</h4>
+        <label className={styles.dropzone}>
+          <div {...getRootProps({ className: 'dropzone' })}>
+            <input {...getInputProps()} />
+            {images.length === 0 && <p>Arraste as imagens aqui ou clique para selecioná-las</p>}
+          </div>
+          <aside>
+            {images.length > 0 && (
+              <div className={styles.imagesWrapper}>
+                {images}
+              </div>
+            )}
+          </aside>
+        </label>
+      </div>
+    );
+  };
 
   const usersOption = users.map(user => (
     <option key={user.numeroContrato + user.nomeUsuario} value={JSON.stringify({ nome: user.nomeUsuario, numeroContrato: user.numeroContrato })}>{`${user.nomeUsuario} (${user.numeroContrato})`}</option>
@@ -185,14 +175,17 @@ const AddProductPage = () => {
             ))}
           </div>
         </div>
-        {/* Dropzones Section */}
         <div className={styles.dropzonesSection}>
-          {dropzones.length > 0 && (
-            <>
-              <h4>Eventos Selecionados:</h4>
-              {dropzones}
-            </>
-          )}
+          {Object.keys(eventTypes).map((eventType) => (
+            eventTypes[eventType] && (
+              <DropzoneField
+                key={eventType}
+                eventType={eventType}
+                files={files[eventType]}
+                onDrop={onDrop}
+              />
+            )
+          ))}
         </div>
         <button onClick={handleSubmit}>Adicionar Álbum</button>
       </div>
