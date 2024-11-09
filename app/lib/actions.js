@@ -3,7 +3,6 @@ import axios from 'axios';
 const baseUrl = 'https://atenas-formaturas-5jarkngkqq-rj.a.run.app';
 
 export const login = async ({ username, password }) => {
-  console.log(`base url ${baseUrl}`);
     const response = await axios.post(`${baseUrl}/v1/autenticar`, {}, {
       auth: {
         username,
@@ -16,7 +15,7 @@ export const login = async ({ username, password }) => {
 
 export const validate = async (token) => {
   try {
-    const response = await axios.post(`${baseUrl}/v1/autenticar`, {}, {
+    const response = await axios.get(`${baseUrl}/v1/autenticar`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -25,7 +24,6 @@ export const validate = async (token) => {
   } catch (error) {
     return false;
   }
-  
 };
 
 export const getAllUsers = async (token) => {
@@ -35,7 +33,6 @@ export const getAllUsers = async (token) => {
         Authorization: `Bearer ${token}`
       }
     });
-    console.log('res', res)
     return res;
   } catch (err) {
     console.error('err: ', err);
@@ -44,10 +41,6 @@ export const getAllUsers = async (token) => {
 
 export const addUser = async (token, fd) => {
   try{
-    console.log('Conteúdo completo do FormData:');
-    fd.forEach((value, key) => {
-      console.log(`Key: ${key}, Value:`, value);
-    });
     const response = await axios.post(`${baseUrl}/v1/user`, fd, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -62,10 +55,6 @@ export const addUser = async (token, fd) => {
 
 export const updateUser = async (token, fd) => {
   try{
-    console.log('Conteúdo completo do FormData:');
-    fd.forEach((value, key) => {
-      console.log(`Key: ${key}, Value:`, value);
-    });
     return await axios.put(`${baseUrl}/v1/user`, fd, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -92,7 +81,6 @@ export const deleteUser = async (token, {nomeUsuario, email}) => {
 
 export const addAlbum = async (token, fd) => {
   try{
-
     const res = await axios.post(`${baseUrl}/v1/albuns`, fd, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -133,10 +121,6 @@ export const deleteAlbum = async (token, {nomeAluno, numeroContrato}) => {
 };
 
 export const updateAlbum = async (token, fd) => {
-  console.log('Conteúdo completo do FormData:');
-    fd.forEach((value, key) => {
-      console.log(`Key: ${key}, Value:`, value);
-    });
   try{
     return await axios.put(`${baseUrl}/v1/albuns`, fd, {
       headers: {

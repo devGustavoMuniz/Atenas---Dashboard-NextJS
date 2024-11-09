@@ -28,8 +28,6 @@ const SingleAlbumPage = () => {
     useEffect(() => {
         const storedAlbum = JSON.parse(localStorage.getItem('album'));
         setAlbum(storedAlbum);
-        console.log('album', storedAlbum);
-    
         if (storedAlbum && storedAlbum.evento) {
             const updatedEventTypes = { ...eventTypes };
             storedAlbum.evento.forEach(evento => {
@@ -61,7 +59,6 @@ const SingleAlbumPage = () => {
     
         if (storedAlbum && storedAlbum.fotos && storedAlbum.evento) {
             const fotosPorEvento = groupFotosByEvent(storedAlbum.fotos, storedAlbum.evento);
-            console.log('Fotos separadas por evento', fotosPorEvento);
             setFotosPorEvento(fotosPorEvento); // Supondo que você tenha um state para armazenar isso
         }
     

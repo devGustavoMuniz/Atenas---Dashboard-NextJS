@@ -1,0 +1,158 @@
+.wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 90px;
+}
+
+.container {
+    width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: var(--bgSoft);
+    border-radius: 8px;
+  }
+  
+  .title {
+    text-align: center;
+    color: var(--text);
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+  }
+  
+  .inputWrapper {
+    margin-bottom: 20px;
+  }
+  
+  .fileInput {
+    display: none;
+  }
+  
+  .fileLabel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 15px;
+    background-color: var(--bg);
+    color: var(--text);
+    border: 2px dashed var(--textSoft);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .fileLabel:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .uploadIcon {
+    margin-right: 10px;
+    font-size: 1.5rem;
+  }
+  
+  .fileListContainer {
+    background-color: var(--bg);
+    border-radius: 8px;
+    padding: 15px;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .fileListContainer::-webkit-scrollbar {
+    width: 8px;
+    border-radius: 2px;
+  }
+  
+  .fileListContainer::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .fileListContainer::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 8px;
+    border: 2px solid #f0f0f0;
+  }
+  
+  .fileListTitle {
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+  
+  .fileList {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .fileListItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--bgSoft);
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+  }
+
+  .fileListItem:last-child {
+    margin-bottom: 0;
+  }
+  
+  .fileInfo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .fileIcon {
+    margin-right: 10px;
+    color: var(--textSoft);
+  }
+  
+  .fileName {
+    color: var(--text);
+    max-width: 400px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .removeButton {
+    background: none;
+    border: none;
+    color: #ff4d4d;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .removeButton:hover {
+    color: #ff1a1a;
+  }
+  
+  .uploadButtonWrapper {
+    text-align: center;
+    margin-top: 15px;
+  }
+  
+  .uploadButton {
+    background-color: #4CAF50;
+    color: var(--text);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .uploadButton:hover {
+    background-color: #45a049;
+  }
+
+  .filePreview {
+    width: 25px; /* ajuste conforme necessário */
+    height: 25px;
+    object-fit: cover;
+    border-radius: 4px; /* arredondamento opcional */
+    margin-right: 8px;
+  }

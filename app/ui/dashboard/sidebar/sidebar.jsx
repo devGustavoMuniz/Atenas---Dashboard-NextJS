@@ -44,14 +44,11 @@ const menuItems = [
 
 const Sidebar = () => {
   const [user, setUser] = useState('');
-  
-  
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     !token && redirect('/login');
     const decodedToken = jwt.decode(token);
-    console.log(decodedToken);
     setUser({
       username: decodedToken.nomeUsuario,
       foto: decodedToken.foto

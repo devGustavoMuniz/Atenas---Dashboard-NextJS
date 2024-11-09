@@ -105,7 +105,7 @@ const ProductsPage = () => {
                     className={`${styles.button} ${styles.view}`}
                     onClick={() => setSingleAlbumOnStorage({ nomeAluno: album.nomeAluno, numeroContrato: album.numeroContrato })}
                   >
-                    View
+                    Ver mais
                   </button>
                   <button
                     className={`${styles.button} ${styles.delete}`}

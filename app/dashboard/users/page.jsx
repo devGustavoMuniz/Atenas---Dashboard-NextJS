@@ -104,7 +104,41 @@ const UsersPage = () => {
                     className={`${styles.button} ${styles.view}`}
                     onClick={() => setSingleUserOnStorage({ nome: user.nomeUsuario, email: user.email })}
                   >
-                    Detalhes
+                    Ver mais
+                  </button>
+                  <button
+                    className={`${styles.button} ${styles.delete}`}
+                    onClick={() => confirmDeleteUser({ nomeUsuario: user.nomeUsuario, email: user.email })}
+                  >
+                    Excluir
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ))}
+          {users.map((user) => (
+            <tr key={user.email}>
+              <td>
+                <div className={styles.user}>
+                  <Image
+                    src={user.foto?.fotoAssinada || "/noavatar.png"}
+                    alt=""
+                    width={40}
+                    height={40}
+                    className={styles.userImage}
+                  />
+                  {user.nomeUsuario}
+                </div>
+              </td>
+              <td>{user.email}</td>
+              <td>{user.telefone}</td>
+              <td>
+                <div className={styles.buttons}>
+                  <button
+                    className={`${styles.button} ${styles.view}`}
+                    onClick={() => setSingleUserOnStorage({ nome: user.nomeUsuario, email: user.email })}
+                  >
+                    Ver mais
                   </button>
                   <button
                     className={`${styles.button} ${styles.delete}`}

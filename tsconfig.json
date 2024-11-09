@@ -20,14 +20,17 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "target": "ES2017"
   },
   "include": [
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "app/ui/dashboard/teste/teste.jsx", "app/ui/dashboard/dropzone/d"  ],
+    "**/*.tsx",
+    "app/ui/dashboard/teste/teste.jsx",
+    "app/ui/dashboard/dropzone/d"
+  ],
   "exclude": [
     "node_modules"
   ]
