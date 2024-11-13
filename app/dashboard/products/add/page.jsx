@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { handleAddAlbum, handlerUser } from "../../../lib";
 
 const AddProductPage = () => {
-  const [album, setAlbum] = useState([]);
+  const [album, setAlbum] = useState('aaaaa');
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [eventTypes, setEventTypes] = useState({
@@ -55,14 +55,17 @@ const AddProductPage = () => {
     const token = localStorage.getItem('token');
     if (!token) return router.push('/login');
     const contratoEAluno = JSON.parse(album.contratoEAluno);
-    const fd = new FormData();
-    fd.append('numeroContrato', contratoEAluno.numeroContrato);
-    fd.append('nomeAluno', contratoEAluno.nome);
-    fd.append('tipoAlbum', album.tipoAlbum);
-    fd.append('minFotos', album.minFotos);
     const eventosSelecionados = Object.keys(eventTypes).filter(event => eventTypes[event]);
-    fd.append('eventos[]', eventosSelecionados);
-    const response = await handleAddAlbum(token, fd);
+    
+    const albumG = {
+      numeroContrato: contratoEAluno.numeroContrato,
+      nomeAluno: contratoEAluno.nome,
+      tipoAlbum: contratoEAluno.tipoAlbum,
+      minFotos: contratoEAluno.minFotos,
+      evento: eventosSelecionados
+    }
+
+    const response = await handleAddAlbum(token, albumG);
     setLoading(false);
     if (response.status === 201) {
       toast("Album adicionado com sucesso!");

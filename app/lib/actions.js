@@ -79,12 +79,12 @@ export const deleteUser = async (token, {nomeUsuario, email}) => {
   }
 };
 
-export const addAlbum = async (token, fd) => {
+export const addAlbum = async (token, album) => {
   try{
-    const res = await axios.post(`${baseUrl}/v1/albuns`, fd, {
+    const res = await axios.post(`${baseUrl}/create-album`, album, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data'
+        'Content-Type': 'application/json'
       }
     });
     return res;

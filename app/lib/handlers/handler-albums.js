@@ -5,8 +5,8 @@ export const handlerAlbum = async (token) => {
     return response.status === 200 ? response.data.albuns : [];
 }
 
-export const handleAddAlbum = async (token, fd) => {
-    return await addAlbum(token, fd);
+export const handleAddAlbum = async (token, album) => {
+    return await addAlbum(token, album);
 }
 
 export const handleUpdateAlbum = async (token, fd) => {
