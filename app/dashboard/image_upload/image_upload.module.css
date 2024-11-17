@@ -1,16 +1,21 @@
-.wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 90px;
+.mainWrapper {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bgSoft);
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 9px;
 }
 
 .container {
-    width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: var(--bgSoft);
-    border-radius: 8px;
+  background-color: #333333;
+  padding: 50px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 650px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   }
   
   .title {
@@ -131,22 +136,25 @@
   }
   
   .uploadButtonWrapper {
-    text-align: center;
+    text-align: right;
     margin-top: 15px;
   }
   
   .uploadButton {
-    background-color: #4CAF50;
-    color: var(--text);
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    padding: 15px 20px;
+  margin-left: auto;
+  background-color: #fcf119;
+  color: #222 !important;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
   }
   
   .uploadButton:hover {
-    background-color: #45a049;
+    background-color: #e2d809;
+  transform: scale(1.05);
   }
 
   .filePreview {
@@ -156,3 +164,29 @@
     border-radius: 4px; /* arredondamento opcional */
     margin-right: 8px;
   }
+
+  .tabWrapper {
+    display: flex;
+    margin-bottom: 20px;
+    gap: 10px;
+  }
+  
+  .tabButton {
+    padding: 10px 15px;
+    border: none;
+    background: #f0f0f0;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s;
+  }
+  
+  .tabButton:hover {
+    background: #e0e0e0;
+  }
+  
+  .activeTab {
+    background: #fcf119;
+    color: #222;
+    font-weight: bold;
+  }
+  

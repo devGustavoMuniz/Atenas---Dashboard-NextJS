@@ -81,7 +81,7 @@ export const deleteUser = async (token, {nomeUsuario, email}) => {
 
 export const addAlbum = async (token, album) => {
   try{
-    const res = await axios.post(`${baseUrl}/create-album`, album, {
+    const res = await axios.post(`${baseUrl}/v1/albuns/create-album`, album, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -120,12 +120,32 @@ export const deleteAlbum = async (token, {nomeAluno, numeroContrato}) => {
   }
 };
 
-export const updateAlbum = async (token, fd) => {
+export const updateAlbum = async (token, fd) => {  
   try{
+    console.log('req update: ', fd);
+    
     return await axios.put(`${baseUrl}/v1/albuns`, fd, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data'
+        'Content-Type': 'application/json'
+      }
+    });
+  } catch (err) {
+    console.error('err: ', err);
+  }
+};
+
+export const uploadFoto = async (token, fd) => {  
+  // console.log("FormData contents:");
+  //   fd.forEach((value, key) => {
+  //       console.log(`${key}:`, value);
+  //   });
+  try{
+    
+    return await axios.post(`${baseUrl}/v1/albuns/set-photo`, fd, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/formdata'
       }
     });
   } catch (err) {

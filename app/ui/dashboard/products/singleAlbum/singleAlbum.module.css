@@ -1,128 +1,81 @@
-.container {
-  display: flex;
-  gap: 50px;
-  margin-top: 20px;
-  flex-direction: column;
-}
-
-.infoContainer {
-  flex: 1;
-  background-color: var(--bgSoft);
-  padding: 20px;
-  border-radius: 10px;
-  font-weight: bold;
-  color: var(--textSoft);
+.mainWrapper {
   height: 100%;
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.imgContainer{
-  width: 100%;
-  height: 300px;
-  position: relative;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 20px;
-}
-
-.formContainer {
-  flex: 1;
+  align-items: center;
+  justify-content: center;
   background-color: var(--bgSoft);
   padding: 20px;
-  border-radius: 10px;
-}
-
-.form{
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 20px;
-
-}
-
-.form input, .form textarea, .form select{
-  padding: 20px;
-  border: 2px solid #1e1d1d;
-  border-radius: 5px;
-  background-color: var(--bg);
-  color: var(--text);
-  margin: 10px 0px;
-}
-
-.form label{
-  font-size: 12px;
-}
-
-.form button{
-  width: 100%;
-  padding: 20px;
-  background-color: #fcf119;
-  color: black !important;
-  color: var(--text);
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
   margin-top: 20px;
+  border-radius: 9px;
 }
 
-.addButton {
-  padding: 14px 28px;
-  background-color: #5d57c9;
-  color: var(--text);
-  border: none;
-  border-radius: 5px;
-  margin-top: 5px;
-  cursor: pointer;
+.container {
+  background-color: #333333;
+  padding: 50px;
+  border-radius: 10px;
+  max-width: 650px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.profilePhotoWrapper {
-  width: 600px;
-  margin: 0 auto;
-  display: block;
-  padding: 30px;
-  background-color: var(--bg);
-  color: var(--text);
-  border: 2px solid #1e1d1d;
-  border-radius: 5px;
-  margin-bottom: 30px;
+.form {
   display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 30px;
 }
 
-.profilePhotoWrapper div {
-  width: 500px;
-  height: 500px;
-  margin-bottom: 15px;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-image: url('../../../../../public/noavatar.png');
-  border-radius: 5px;
-}
-
-.profilePhotoWrapper label {
-  width: 100%;
-  padding: 30px;
-  background-color: #fcf119;
-  color: black !important;
-  text-align: center;
-  color: var(--text);
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
+.form .input,
+.form textarea,
+.form select,
 .checkboxArea {
-  padding: 30px;
+  padding: 20px 30px;
   background-color: var(--bg);
   color: var(--text);
   border: 2px solid #1e1d1d;
   border-radius: 5px;
-  /* margin-bottom: 30px; */
+  transition: all 0.3s ease-in-out;
+}
+
+.form .input:hover,
+.form textarea:hover,
+.form select:hover {
+  border-color: #fcf119;
+}
+
+.form .input,
+.form select {
   width: 100%;
+  font-size: 14px;
+}
+
+.form textarea,
+.checkboxArea {
+  width: 100%;
+  font-size: 14px;
+}
+
+.form button {
+  padding: 15px 20px;
+  margin-left: auto;
+  background-color: #fcf119;
+  color: #222 !important;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.form button:hover {
+  background-color: #e2d809;
+  transform: scale(1.05);
+}
+
+.form input,
+.form textarea,
+.form select,
+.form label {
+  cursor: pointer;
 }
 
 .dropzone {
@@ -132,11 +85,24 @@
   background-color: var(--bg);
   border: 2px dashed #5d5a5a;
   border-radius: 5px;
-  display: block;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+}
+
+.dropzone:hover {
+  border-color: #fcf119;
 }
 
 .dropzone p {
   text-align: center;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.checkboxArea h4 {
+  margin-bottom: 10px;
+  color: var(--text);
+  font-size: 16px;
 }
 
 .wrapper {
@@ -145,10 +111,27 @@
   gap: 10px;
 }
 
+.wrapper div {
+  width: 45%;
+}
+
+.dropzonesSection {
+  display: block;
+  width: 100%;
+}
+
+.dropzonesSection label {
+  display: block;
+  width: 100%;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
 .numPageWrapper {
   display: flex;
   justify-content: space-between;
   width: 100%;
+  gap: 30px;
 }
 
 .imagesWrapper {
@@ -161,20 +144,92 @@
   border-radius: 5px;
 }
 
-.numPageWrapper input {
-  width: 49%;
-}
-
-.fotoContainer {
-  margin-top: 10px;
+.loadingOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
-  gap: 15px;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
 }
 
-.eventSection {
-  margin-bottom: 20px;
+.spinner {
+  border: 8px solid rgba(255, 255, 255, 0.3);
+  border-top: 8px solid #fff;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
 }
 
-.fotoItem {
-  text-align: center;
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.checkboxContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.checkboxInput {
+  display: none;
+}
+
+.checkboxLabel {
+  position: relative;
+  padding-left: 30px;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--text);
+  user-select: none;
+}
+
+.checkboxLabel::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 20px;
+  width: 20px;
+  background-color: #333;
+  border: 2px solid #1e1d1d;
+  border-radius: 4px;
+  transition: all 0.3s ease-in-out;
+}
+
+.checkboxLabel::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: calc(50% - 3px);
+  transform: translateY(-50%) rotate(45deg);
+  width: 8px;
+  height: 14px;
+  border-right: 2px solid transparent;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s ease-in-out;
+}
+
+.checkboxInput:checked + .checkboxLabel::before {
+  background-color: #fcf119;
+  border-color: #fcf119;
+}
+
+.checkboxInput:checked + .checkboxLabel::after {
+  border-color: #222;
+}
+
+.checkboxLabel:hover::before {
+  border-color: #fcf119;
 }

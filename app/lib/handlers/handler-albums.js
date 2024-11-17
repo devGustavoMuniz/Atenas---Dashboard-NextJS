@@ -10,7 +10,9 @@ export const handleAddAlbum = async (token, album) => {
 }
 
 export const handleUpdateAlbum = async (token, fd) => {
-    return await updateAlbum(token, fd);
+    const res = await updateAlbum(token, fd);
+    console.log('res update: ', res);
+    return res;
 }
 
 export const handleDeleteAlbum = async (token, album) => {

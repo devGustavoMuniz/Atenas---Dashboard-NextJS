@@ -1,27 +1,79 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './image_upload.module.css';
 import { FaTrash, FaCloudUploadAlt } from 'react-icons/fa';
 import Image from 'next/image';
+import { handlerUploadFotos } from '../../lib';
 
-// Define the file type for better type checking
 interface SelectedFile extends File {
   preview?: string;
 }
 
+interface Evento {
+  isExist: boolean;
+}
+
+interface Album {
+  eventos: Record<string, Evento>;
+}
+
 export default function UploadPage() {
-  // State to manage selected files
-  const [selectedFiles, setSelectedFiles] = useState<SelectedFile[]>([]);
-  // Ref for file input to allow resetting
+  const [eventTypes, setEventTypes] = useState({
+    passeio: false,
+    baile: false,
+    missa: false,
+    culto: false,
+    colacao: false,
+    identificacao: false,
+  });
+  const [selectedFilesByEvent, setSelectedFilesByEvent] = useState<Record<string, SelectedFile[]>>({});
+  const [album, setAlbum] = useState({});
+  const [activeTab, setActiveTab] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Handle file selection
-  // Handle file selection and conversion to base64
+  useEffect(() => {
+    const storedAlbum = JSON.parse(localStorage.getItem('album')) as Album;
+    setAlbum(storedAlbum);
+  
+    // Identificar os eventos habilitados
+    const eventosComIsExist = Object.entries(storedAlbum.eventos)
+      .filter(([_, evento]) => evento.isExist)
+      .map(([nomeEvento]) => nomeEvento);
+  
+    // Atualizar o estado de eventTypes
+    const updatedEventTypes = {
+      passeio: eventosComIsExist.includes('passeio'),
+      baile: eventosComIsExist.includes('baile'),
+      missa: eventosComIsExist.includes('missa'),
+      culto: eventosComIsExist.includes('culto'),
+      colacao: eventosComIsExist.includes('colacao'),
+      identificacao: eventosComIsExist.includes('identificacao'),
+    };
+    setEventTypes(updatedEventTypes);
+  
+    // Inicializar as listas de arquivos apenas para eventos habilitados
+    const enabledEventFiles = Object.keys(updatedEventTypes)
+      .filter((type) => updatedEventTypes[type])
+      .reduce((acc, type) => {
+        acc[type] = [];
+        return acc;
+      }, {} as Record<string, SelectedFile[]>);
+  
+    setSelectedFilesByEvent(enabledEventFiles);
+  
+    // Definir a primeira aba habilitada como ativa
+    const firstEnabledTab = Object.keys(updatedEventTypes).find((type) => updatedEventTypes[type]);
+    if (firstEnabledTab) setActiveTab(firstEnabledTab);
+  }, []);
+  
+
+  console.log(eventTypes);
+  
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
 
-    // Função para converter um arquivo para base64
     const toBase64 = (file: File): Promise<string> =>
       new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -30,10 +82,8 @@ export default function UploadPage() {
         reader.onerror = (error) => reject(error);
       });
 
-    // Processa os arquivos selecionados
     Promise.all(
       files.map(async (file) => {
-        // Verifica se é uma imagem e se é menor que 5MB
         if (file.type.startsWith('image/') && file.size <= 5 * 1024 * 1024) {
           const preview = await toBase64(file);
           return Object.assign(file, { preview });
@@ -41,115 +91,111 @@ export default function UploadPage() {
         return null;
       })
     ).then((results) => {
-      // Filtra arquivos válidos e adiciona ao estado
       const validFiles = results.filter((file) => file) as SelectedFile[];
-      setSelectedFiles((prevFiles) => [...prevFiles, ...validFiles]);
+      setSelectedFilesByEvent((prevFiles) => ({
+        ...prevFiles,
+        [activeTab]: [...(prevFiles[activeTab] || []), ...validFiles],
+      }));
 
-      // Reset input para permitir seleção dos mesmos arquivos novamente
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
     });
   };
 
-
-  // Remove a file from the list
   const handleRemoveFile = (indexToRemove: number) => {
-    setSelectedFiles(prevFiles => 
-      prevFiles.filter((_, index) => index !== indexToRemove)
-    );
+    setSelectedFilesByEvent((prevFiles) => ({
+      ...prevFiles,
+      [activeTab]: prevFiles[activeTab].filter((_, index) => index !== indexToRemove),
+    }));
   };
 
-  // Handle file upload (server action)
   const handleUpload = async () => {
-    if (selectedFiles.length === 0) {
+    if (!selectedFilesByEvent[activeTab] || selectedFilesByEvent[activeTab].length === 0) {
+      alert(`Nenhuma foto adicionada para o evento ${activeTab}.`);
       return;
     }
 
-    const formData = new FormData();
-    selectedFiles.forEach((file, index) => {
-      formData.append(`file-${index}`, file);
-    });
-
     try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        alert(`Upload failed: ${errorData.message}`);
-      }
-      alert('Files uploaded successfully');
-      setSelectedFiles([]);
+      const token = localStorage.getItem('token');
+      const response = await handlerUploadFotos(token, album, selectedFilesByEvent[activeTab], activeTab);
+      
+      alert('Fotos enviadas com sucesso!');
+      setSelectedFilesByEvent((prevFiles) => ({
+        ...prevFiles,
+        [activeTab]: [],
+      }));
     } catch (error) {
-      console.error('Upload error:', error);
-      alert('An error occurred during upload');
+      console.error('Erro no upload:', error);
+      alert('Erro ao enviar as fotos.');
     }
   };
 
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.mainWrapper}>
       <div className={styles.container}>
         <h1 className={styles.title}>Cadastro de fotos no álbum</h1>
-        {/* File Input */}
+
+        {/* Abas de eventos */}
+        <div className={styles.tabWrapper}>
+          {Object.keys(eventTypes)
+            .filter((type) => eventTypes[type])
+            .map((type) => (
+              <button
+                key={type}
+                className={`${styles.tabButton} ${activeTab === type ? styles.activeTab : ''}`}
+                onClick={() => setActiveTab(type)}
+              >
+                {type}
+              </button>
+            ))}
+        </div>
+
+        {/* Input de arquivos */}
         <div className={styles.inputWrapper}>
-          <input 
-            type="file" 
-            multiple 
+          <input
+            type="file"
+            multiple
             accept="image/*"
             onChange={handleFileChange}
             ref={fileInputRef}
             className={styles.fileInput}
             id="file-upload"
           />
-          <label 
-            htmlFor="file-upload" 
-            className={styles.fileLabel}
-          >
+          <label htmlFor="file-upload" className={styles.fileLabel}>
             <FaCloudUploadAlt className={styles.uploadIcon} />
-            <span>Clique para selecionar as fotos</span>
+            <span>Adicionar fotos para {activeTab}</span>
           </label>
         </div>
 
-        {/* Selected Files List */}
-        {selectedFiles.length > 0 && (
+        {/* Lista de arquivos */}
+        {selectedFilesByEvent[activeTab]?.length > 0 && (
           <div>
-            <h3 className={styles.fileListTitle}>Fotos selecionadas:</h3>
-            <div className={styles.fileListContainer}>
-              <ul className={styles.fileList}>
-                {selectedFiles.map((file, index) => (
-                  <li 
-                    key={index} 
-                    className={styles.fileListItem}
+            <h3 className={styles.fileListTitle}>Fotos selecionadas para {activeTab}:</h3>
+            <ul className={styles.fileList}>
+              {selectedFilesByEvent[activeTab].map((file, index) => (
+                <li key={index} className={styles.fileListItem}>
+                  <div className={styles.fileInfo}>
+                    <Image src={file.preview} alt={file.name} width="25" height="25" className={styles.filePreview} />
+                    <span className={styles.fileName}>{file.name}</span>
+                  </div>
+                  <button
+                    onClick={() => handleRemoveFile(index)}
+                    className={styles.removeButton}
+                    aria-label="Remover foto"
                   >
-                    <div className={styles.fileInfo}>
-                      <Image src={file.preview} alt={file.name} width="25" height="25" className={styles.filePreview} />
-                      <span className={styles.fileName}>{file.name}</span>
-                    </div>
-                    <button 
-                      onClick={() => handleRemoveFile(index)}
-                      className={styles.removeButton}
-                      aria-label="Remove file"
-                    >
-                      <FaTrash />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
+                    <FaTrash />
+                  </button>
+                </li>
+              ))}
+            </ul>
             <div className={styles.uploadButtonWrapper}>
-              <button 
-                onClick={handleUpload}
-                className={styles.uploadButton}
-              >
-                Cadastrar fotos
+              <button onClick={handleUpload} className={styles.uploadButton}>
+                Cadastrar fotos de {activeTab}
               </button>
             </div>
           </div>
         )}
-        
       </div>
     </div>
   );

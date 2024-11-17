@@ -60,10 +60,13 @@ const AddProductPage = () => {
     const albumG = {
       numeroContrato: contratoEAluno.numeroContrato,
       nomeAluno: contratoEAluno.nome,
-      tipoAlbum: contratoEAluno.tipoAlbum,
-      minFotos: contratoEAluno.minFotos,
+      tipoAlbum: album.tipoAlbum,
+      minFotos: album.minFotos,
       evento: eventosSelecionados
     }
+
+    console.log(albumG);
+    
 
     const response = await handleAddAlbum(token, albumG);
     setLoading(false);
@@ -79,42 +82,46 @@ const AddProductPage = () => {
   ));
 
   return (
-    <div className={styles.container}>
-      {loading && (
-        <div className={styles.loadingOverlay}>
-          <div className={styles.spinner}></div>
-        </div>
-      )}
-      <div className={styles.form}>
-        <select name="contratoEAluno" required onChange={handleChange}>
-          <option value="">Selecione o Aluno do Álbum</option>
-          {usersOption}
-        </select>
-        <div className={styles.numPageWrapper}>
-          <input className={styles.input} type="number" placeholder="Mínimo de páginas" name="minFotos" required onChange={handleChange} />
-          <input className={styles.input} type="text" placeholder="Tipo do Álbum" name="tipoAlbum" required onChange={handleChange} />
-        </div>
-        <div className={styles.checkboxArea}>
-          <h4>Tipos de Evento:</h4>
-          <div className={styles.wrapper}>
-            {Object.keys(eventTypes).map((event) => (
-              <div key={event}>
-                <label>
+    <div className={styles.mainWrapper}>
+      <div className={styles.container}>
+        {loading && (
+          <div className={styles.loadingOverlay}>
+            <div className={styles.spinner}></div>
+          </div>
+        )}
+        <div className={styles.form}>
+          <select name="contratoEAluno" required onChange={handleChange}>
+            <option value="">Selecione o Aluno do Álbum</option>
+            {usersOption}
+          </select>
+          <div className={styles.numPageWrapper}>
+            <input className={styles.input} type="text" placeholder="Mínimo de páginas" name="minFotos" required onChange={handleChange} />
+            <input className={styles.input} type="text" placeholder="Tipo do Álbum" name="tipoAlbum" required onChange={handleChange} />
+          </div>
+          <div className={styles.checkboxArea}>
+            <h4>Tipos de Evento:</h4>
+            <div className={styles.wrapper}>
+              {Object.keys(eventTypes).map((event) => (
+                <div key={event} className={styles.checkboxContainer}>
                   <input
                     type="checkbox"
+                    id={event}
                     name={event}
+                    className={styles.checkboxInput}
                     checked={eventTypes[event]}
                     onChange={handleCheckboxChange}
                   />
-                  {event}
-                </label>
-              </div>
-            ))}
+                  <label htmlFor={event} className={styles.checkboxLabel}>
+                    {event}
+                  </label>
+                </div>
+              ))}
+            </div>
           </div>
+          <button onClick={handleSubmit}>Criar Álbum</button>
         </div>
-        <button onClick={handleSubmit}>Criar Álbum</button>
+        <ToastContainer position="top-center" theme="dark" />
       </div>
-      <ToastContainer position="top-center" theme="dark" />
     </div>
   );
 };

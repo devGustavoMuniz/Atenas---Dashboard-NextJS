@@ -25,11 +25,23 @@ const ProductsPage = () => {
     handleAlbum();
   }, []);
 
+
+  console.log(albums);
+  
+
   const setSingleAlbumOnStorage = ({ nomeAluno, numeroContrato }) => {
     const album = albums.find((album) => album.nomeAluno === nomeAluno && album.numeroContrato === numeroContrato);
     if (album) {
       localStorage.setItem('album', JSON.stringify(album));
       router.push('/dashboard/album');
+    }
+  };
+
+  const setSingleAlbumOnStorageToPhoto = ({ nomeAluno, numeroContrato }) => {
+    const album = albums.find((album) => album.nomeAluno === nomeAluno && album.numeroContrato === numeroContrato);
+    if (album) {
+      localStorage.setItem('album', JSON.stringify(album));
+      router.push('/dashboard/image_upload');
     }
   };
 
@@ -101,6 +113,12 @@ const ProductsPage = () => {
               <td>{album.createdAt}</td>
               <td>
                 <div className={styles.buttons}>
+                  <button
+                    className={`${styles.button} ${styles.view}`}
+                    onClick={() => setSingleAlbumOnStorageToPhoto({ nomeAluno: album.nomeAluno, numeroContrato: album.numeroContrato })}
+                  >
+                    Adicionar Fotos
+                  </button>
                   <button
                     className={`${styles.button} ${styles.view}`}
                     onClick={() => setSingleAlbumOnStorage({ nomeAluno: album.nomeAluno, numeroContrato: album.numeroContrato })}

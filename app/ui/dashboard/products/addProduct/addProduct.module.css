@@ -1,14 +1,27 @@
-.container {
+.mainWrapper {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: var(--bgSoft);
   padding: 20px;
-  border-radius: 10px;
   margin-top: 20px;
-} 
+  border-radius: 9px;
+}
+
+.container {
+  background-color: #333333;
+  padding: 50px;
+  border-radius: 10px;
+  max-width: 650px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
 
 .form {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  gap: 30px;
 }
 
 .form .input,
@@ -20,29 +33,48 @@
   color: var(--text);
   border: 2px solid #1e1d1d;
   border-radius: 5px;
-  margin-bottom: 30px;
+  transition: all 0.3s ease-in-out;
 }
 
-.form .input, .form select {
-  width: 45%;
+.form .input:hover,
+.form textarea:hover,
+.form select:hover {
+  border-color: #fcf119;
 }
 
-.form textarea, .checkboxArea{
+.form .input,
+.form select {
   width: 100%;
+  font-size: 14px;
 }
 
-.form button{
+.form textarea,
+.checkboxArea {
+  width: 100%;
+  font-size: 14px;
+}
+
+.form button {
   padding: 15px 20px;
   margin-left: auto;
   background-color: #fcf119;
-  color: black !important;
-  color: var(--text);
+  color: #222 !important;
+  font-weight: bold;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: all 0.3s ease-in-out;
 }
 
-.form input, .form textarea, .form select, .form label {
+.form button:hover {
+  background-color: #e2d809;
+  transform: scale(1.05);
+}
+
+.form input,
+.form textarea,
+.form select,
+.form label {
   cursor: pointer;
 }
 
@@ -53,20 +85,34 @@
   background-color: var(--bg);
   border: 2px dashed #5d5a5a;
   border-radius: 5px;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+}
+
+.dropzone:hover {
+  border-color: #fcf119;
 }
 
 .dropzone p {
   text-align: center;
+  font-size: 14px;
+  color: var(--text);
 }
 
 .checkboxArea h4 {
   margin-bottom: 10px;
+  color: var(--text);
+  font-size: 16px;
 }
 
 .wrapper {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+.wrapper div {
+  width: 45%;
 }
 
 .dropzonesSection {
@@ -77,12 +123,15 @@
 .dropzonesSection label {
   display: block;
   width: 100%;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
 .numPageWrapper {
   display: flex;
   justify-content: space-between;
-  width: 45%;
+  width: 100%;
+  gap: 30px;
 }
 
 .imagesWrapper {
@@ -124,4 +173,63 @@
   100% {
     transform: rotate(360deg);
   }
+}
+
+.checkboxContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.checkboxInput {
+  display: none;
+}
+
+.checkboxLabel {
+  position: relative;
+  padding-left: 30px;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--text);
+  user-select: none;
+}
+
+.checkboxLabel::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 20px;
+  width: 20px;
+  background-color: #333;
+  border: 2px solid #1e1d1d;
+  border-radius: 4px;
+  transition: all 0.3s ease-in-out;
+}
+
+.checkboxLabel::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: calc(50% - 3px);
+  transform: translateY(-50%) rotate(45deg);
+  width: 8px;
+  height: 14px;
+  border-right: 2px solid transparent;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s ease-in-out;
+}
+
+.checkboxInput:checked + .checkboxLabel::before {
+  background-color: #fcf119;
+  border-color: #fcf119;
+}
+
+.checkboxInput:checked + .checkboxLabel::after {
+  border-color: #222;
+}
+
+.checkboxLabel:hover::before {
+  border-color: #fcf119;
 }
