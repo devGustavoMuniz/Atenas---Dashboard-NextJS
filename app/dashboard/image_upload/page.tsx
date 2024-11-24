@@ -4,7 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import styles from './image_upload.module.css';
 import { FaTrash, FaCloudUploadAlt } from 'react-icons/fa';
 import Image from 'next/image';
-import { handlerUploadFotos } from '../../lib';
+import { deleteFoto, handlerDeleteFoto, handlerUploadFotos } from '../../lib';
+import { redirect } from 'next/navigation';
 
 interface SelectedFile extends File {
   preview?: string;
@@ -14,8 +15,32 @@ interface Evento {
   isExist: boolean;
 }
 
+interface Foto {
+  filename: string;
+  fotoAssinada: string;
+  id: string;
+  _id: string;
+  evento: string;
+}
+
+interface Evento {
+  id: string;
+  isExist: boolean;
+  fotos: Foto[];
+}
+
 interface Album {
-  eventos: Record<string, Evento>;
+  id: string;
+  numeroContrato: string;
+  nomeAluno: string;
+  tipoAlbum: string;
+  createdAt: string;
+  minFotos: number;
+  eventos: {
+      passeio?: Evento;
+      baile?: Evento;
+      missa?: Evento;
+  };
 }
 
 export default function UploadPage() {
@@ -28,13 +53,16 @@ export default function UploadPage() {
     identificacao: false,
   });
   const [selectedFilesByEvent, setSelectedFilesByEvent] = useState<Record<string, SelectedFile[]>>({});
-  const [album, setAlbum] = useState({});
+  const [album, setAlbum] = useState<Album>();
   const [activeTab, setActiveTab] = useState<string>('');
+  const [isEditing, setIsEditing] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const storedAlbum = JSON.parse(localStorage.getItem('album')) as Album;
     setAlbum(storedAlbum);
+    console.log(storedAlbum);
+    
   
     // Identificar os eventos habilitados
     const eventosComIsExist = Object.entries(storedAlbum.eventos)
@@ -68,7 +96,6 @@ export default function UploadPage() {
   }, []);
   
 
-  console.log(eventTypes);
   
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -110,6 +137,10 @@ export default function UploadPage() {
     }));
   };
 
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setActiveTab(event.target.value);
+  };
+
   const handleUpload = async () => {
     if (!selectedFilesByEvent[activeTab] || selectedFilesByEvent[activeTab].length === 0) {
       alert(`Nenhuma foto adicionada para o evento ${activeTab}.`);
@@ -131,24 +162,62 @@ export default function UploadPage() {
     }
   };
 
+  const handleDeleteImage = async (foto: Foto) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      redirect('/login');
+      return;
+    }
+  
+    try {
+      // Chama a função para deletar a foto
+      await handlerDeleteFoto(token, foto.id, foto.evento);
+      console.log('Foto deletada com sucesso.');
+  
+      // Atualiza o estado do álbum, removendo a foto correspondente
+      setAlbum((prevAlbum) => {
+        if (!prevAlbum) return prevAlbum;
+  
+        const updatedEventos = {
+          ...prevAlbum.eventos,
+          [foto.evento]: {
+            ...prevAlbum.eventos[foto.evento],
+            fotos: prevAlbum.eventos[foto.evento].fotos.filter((f) => f.id !== foto.id),
+          },
+        };
+  
+        return { ...prevAlbum, eventos: updatedEventos };
+      });
+    } catch (error) {
+      console.error('Erro ao deletar a foto:', error);
+      alert('Não foi possível excluir a foto. Tente novamente.');
+    }
+  };
+  
+
   return (
     <div className={styles.mainWrapper}>
+      {isEditing && (
       <div className={styles.container}>
-        <h1 className={styles.title}>Cadastro de fotos no álbum</h1>
+        <h1 className={styles.title}>Álbum de {album?.nomeAluno}</h1>
 
-        {/* Abas de eventos */}
         <div className={styles.tabWrapper}>
-          {Object.keys(eventTypes)
-            .filter((type) => eventTypes[type])
-            .map((type) => (
-              <button
-                key={type}
-                className={`${styles.tabButton} ${activeTab === type ? styles.activeTab : ''}`}
-                onClick={() => setActiveTab(type)}
-              >
-                {type}
-              </button>
-            ))}
+          <select
+          name="numeroContrato"
+          required
+          onChange={handleSelectChange}
+          >
+              <option value="" disabled>Selecione um Evento</option>
+              {eventTypes &&
+              Object.keys(eventTypes)
+              .filter((type) => eventTypes[type])
+              .map((type) => (
+                <option key={type} value={type}>{type}</option>
+              ))}
+          </select>
+          <button className={styles.uploadButton} onClick={() => setIsEditing(false)}>
+            Ver fotos cadastradas
+          </button>
         </div>
 
         {/* Input de arquivos */}
@@ -197,6 +266,46 @@ export default function UploadPage() {
           </div>
         )}
       </div>
+      )}
+
+      {!isEditing && (
+        <div className={styles.container}>
+          <h1 className={styles.title}>Álbum de {album?.nomeAluno}</h1>
+
+          <div className={styles.tabWrapper}>
+            <select
+            name="numeroContrato"
+            required
+            onChange={handleSelectChange}
+            >
+                <option value="" disabled>Selecione um Evento</option>
+                {eventTypes &&
+                Object.keys(eventTypes)
+                .filter((type) => eventTypes[type])
+                .map((type) => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+            </select>
+            <button className={styles.uploadButton} onClick={() => setIsEditing(true)}>
+              Cadastrar novas fotos
+            </button>
+          </div>
+
+          <div className={styles.fotosWrapper}>
+            {album?.eventos[activeTab].fotos.map((foto) => (
+              <div key={foto.id} className={styles.imageContainer}>
+              <Image loading="lazy" src={foto.fotoAssinada} alt={foto.filename} width={100} height={100} />
+              <button 
+                className={styles.deleteButton} 
+                onClick={() => handleDeleteImage(foto)}
+              >
+                <FaTrash />
+              </button>
+              </div>
+            ))}
+          </div>
+        </div>
+        )}
     </div>
   );
 }

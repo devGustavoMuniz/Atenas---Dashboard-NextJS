@@ -117,13 +117,13 @@ const ProductsPage = () => {
                     className={`${styles.button} ${styles.view}`}
                     onClick={() => setSingleAlbumOnStorageToPhoto({ nomeAluno: album.nomeAluno, numeroContrato: album.numeroContrato })}
                   >
-                    Adicionar Fotos
+                    Ver fotos
                   </button>
                   <button
                     className={`${styles.button} ${styles.view}`}
                     onClick={() => setSingleAlbumOnStorage({ nomeAluno: album.nomeAluno, numeroContrato: album.numeroContrato })}
                   >
-                    Ver mais
+                    Ver dados
                   </button>
                   <button
                     className={`${styles.button} ${styles.delete}`}

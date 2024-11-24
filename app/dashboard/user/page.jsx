@@ -125,7 +125,7 @@ const SingleUserPage = () => {
             fd.append('telefone', String(user.telefone));
             fd.append('nomeEscola', String(user.nomeEscola));
             fd.append('email', String(user.email));
-            fd.append('isAdm', user.isAdm ? true : false);
+            fd.append('isAdm', user.isAdm);
             const response = await handleUpdateUser(token, fd);
             if (response.status === 200) {
                 toast("Usuário atualizado com sucesso!");

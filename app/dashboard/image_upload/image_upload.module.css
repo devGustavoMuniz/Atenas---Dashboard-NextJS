@@ -48,7 +48,8 @@
   }
   
   .fileLabel:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #2d2c2c;
+    border-color: #fcf119;
   }
   
   .uploadIcon {
@@ -189,4 +190,80 @@
     color: #222;
     font-weight: bold;
   }
+
+  .tabWrapper select {
+    padding: 15px 20px;
+    background-color: var(--bg);
+    color: var(--text);
+    border: 2px solid #1e1d1d;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+  }
+
+  .tabWrapper select:hover {
+    border-color: #fcf119;
+  }
+
+  .fotosWrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 16px;
+    justify-content: center;
+    background-color: var(--bgSoft);
+    justify-items: center;
+    border-radius: 8px;
+    padding: 15px;
+    max-height: 300px;
+    overflow-y: auto;
+  }
   
+  .fotosWrapper::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .fotosWrapper::-webkit-scrollbar-track {
+    background: var(--bg);
+    border-radius: 4px;
+  }
+  
+  .fotosWrapper::-webkit-scrollbar-thumb {
+    background: var(--textSoft);
+    border-radius: 4px;
+    border: 2px solid var(--bg); 
+    cursor: pointer;
+  }
+  
+  .fotosWrapper img {
+    border-radius: 8px;
+    width: 100%;
+    max-width: 150px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .imageContainer {
+    position: relative; /* Necessário para posicionar o botão */
+  }
+
+  .deleteButton {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: rgba(255, 0, 0, 0.8); /* Botão vermelho translúcido */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    width: 22px;
+    height: 22px;
+    font-size: 10px;
+    font-weight: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .deleteButton:hover {
+    background: rgba(255, 0, 0, 1); /* Intensifica a cor ao passar o mouse */
+  }

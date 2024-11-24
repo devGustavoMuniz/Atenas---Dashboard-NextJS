@@ -54,6 +54,11 @@ export const addUser = async (token, fd) => {
 };
 
 export const updateUser = async (token, fd) => {
+  console.log("FormData contents:");
+fd.forEach((value, key) => {
+    console.log(`${key}:`, value, `(Type: ${typeof value})`);
+});
+
   try{
     return await axios.put(`${baseUrl}/v1/user`, fd, {
       headers: {
@@ -136,16 +141,31 @@ export const updateAlbum = async (token, fd) => {
 };
 
 export const uploadFoto = async (token, fd) => {  
-  // console.log("FormData contents:");
-  //   fd.forEach((value, key) => {
-  //       console.log(`${key}:`, value);
-  //   });
+  console.log("FormData contents:");
+    fd.forEach((value, key) => {
+        console.log(`${key}:`, value);
+    });
   try{
     
     return await axios.post(`${baseUrl}/v1/albuns/set-photo`, fd, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'multipart/formdata'
+      }
+    });
+  } catch (err) {
+    console.error('err: ', err);
+  }
+};
+
+export const deleteFoto = async (token, fd) => {  
+  try{
+    console.log('fotoDelete: ', fd);
+    
+    return await axios.patch(`${baseUrl}/v1/albuns/delete-photo`, fd, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
       }
     });
   } catch (err) {

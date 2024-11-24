@@ -1,4 +1,4 @@
-import { uploadFoto } from "../../lib";
+import { uploadFoto, deleteFoto } from "../../lib";
 
 export const handlerUploadFotos = async (token, album, selectedFiles, activeTab) => {
     // console.log("album", album);
@@ -15,4 +15,8 @@ export const handlerUploadFotos = async (token, album, selectedFiles, activeTab)
             await uploadFoto(token, newFormData);
     });
     Promise.all(promiseUpload);
+};
+
+export const handlerDeleteFoto = async (token, photoId, evento) => {  
+    return await deleteFoto(token, {photoId, evento});
 };
