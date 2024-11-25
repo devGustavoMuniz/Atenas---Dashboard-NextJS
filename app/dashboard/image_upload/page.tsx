@@ -11,10 +11,6 @@ interface SelectedFile extends File {
   preview?: string;
 }
 
-interface Evento {
-  isExist: boolean;
-}
-
 interface Foto {
   filename: string;
   fotoAssinada: string;

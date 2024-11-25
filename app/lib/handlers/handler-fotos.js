@@ -14,7 +14,7 @@ export const handlerUploadFotos = async (token, album, selectedFiles, activeTab)
             
             await uploadFoto(token, newFormData);
     });
-    Promise.all(promiseUpload);
+    await Promise.all(promiseUpload);
 };
 
 export const handlerDeleteFoto = async (token, photoId, evento) => {  
