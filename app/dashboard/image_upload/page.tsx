@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styles from './image_upload.module.css';
 import { FaTrash, FaCloudUploadAlt } from 'react-icons/fa';
 import Image from 'next/image';
-import { deleteFoto, handlerDeleteFoto, handlerUploadFotos } from '../../lib';
+import { deleteFoto, getAlbumById, handlerDeleteFoto, handlerUploadFotos } from '../../lib';
 import { redirect } from 'next/navigation';
 
 interface SelectedFile extends File {
@@ -57,7 +57,6 @@ export default function UploadPage() {
   useEffect(() => {
     const storedAlbum = JSON.parse(localStorage.getItem('album')) as Album;
     setAlbum(storedAlbum);
-    console.log(storedAlbum);
     
   
     // Identificar os eventos habilitados
@@ -145,8 +144,11 @@ export default function UploadPage() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await handlerUploadFotos(token, album, selectedFilesByEvent[activeTab], activeTab);
       
+      
+      const response = await handlerUploadFotos(token, album, selectedFilesByEvent[activeTab], activeTab);
+      const res = await getAlbumById(token, album.id);
+      setAlbum(res[0]);
       alert('Fotos enviadas com sucesso!');
       setSelectedFilesByEvent((prevFiles) => ({
         ...prevFiles,
@@ -162,13 +164,11 @@ export default function UploadPage() {
     const token = localStorage.getItem('token');
     if (!token) {
       redirect('/login');
-      return;
     }
   
     try {
       // Chama a função para deletar a foto
       await handlerDeleteFoto(token, foto.id, foto.evento);
-      console.log('Foto deletada com sucesso.');
   
       // Atualiza o estado do álbum, removendo a foto correspondente
       setAlbum((prevAlbum) => {

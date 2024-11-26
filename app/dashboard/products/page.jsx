@@ -26,7 +26,6 @@ const ProductsPage = () => {
   }, []);
 
 
-  console.log(albums);
   
 
   const setSingleAlbumOnStorage = ({ nomeAluno, numeroContrato }) => {

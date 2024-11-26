@@ -11,10 +11,14 @@ export const handleAddAlbum = async (token, album) => {
 
 export const handleUpdateAlbum = async (token, fd) => {
     const res = await updateAlbum(token, fd);
-    console.log('res update: ', res);
     return res;
 }
 
 export const handleDeleteAlbum = async (token, album) => {
     return await deleteAlbum(token, album);
+}
+
+export const getAlbumById = async (token, albumId) => {
+    const { data } = await getAllAlbums(token);
+    return data.albuns.filter((album) => album.id == albumId);
 }

@@ -1,9 +1,6 @@
 import { uploadFoto, deleteFoto } from "../../lib";
 
 export const handlerUploadFotos = async (token, album, selectedFiles, activeTab) => {
-    // console.log("album", album);
-    // console.log("selectedFiles", selectedFiles);
-    // console.log("activeTab", activeTab);
     
     const promiseUpload = selectedFiles.map( async (file) => {
             const newFormData = new FormData();

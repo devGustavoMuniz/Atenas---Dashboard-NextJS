@@ -12,12 +12,12 @@ const AddProductPage = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [eventTypes, setEventTypes] = useState({
-    Passeio: false,
-    Baile: false,
-    Missa: false,
-    Culto: false,
-    Colação: false,
-    Identificação: false,
+    passeio: false,
+    baile: false,
+    missa: false,
+    culto: false,
+    colação: false,
+    identificação: false,
   });
 
   const router = useRouter();
@@ -65,7 +65,6 @@ const AddProductPage = () => {
       evento: eventosSelecionados
     }
 
-    console.log(albumG);
     
 
     const response = await handleAddAlbum(token, albumG);

@@ -54,11 +54,6 @@ export const addUser = async (token, fd) => {
 };
 
 export const updateUser = async (token, fd) => {
-  console.log("FormData contents:");
-fd.forEach((value, key) => {
-    console.log(`${key}:`, value, `(Type: ${typeof value})`);
-});
-
   try{
     return await axios.put(`${baseUrl}/v1/user`, fd, {
       headers: {
@@ -127,8 +122,6 @@ export const deleteAlbum = async (token, {nomeAluno, numeroContrato}) => {
 
 export const updateAlbum = async (token, fd) => {  
   try{
-    console.log('req update: ', fd);
-    
     return await axios.put(`${baseUrl}/v1/albuns`, fd, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -141,10 +134,6 @@ export const updateAlbum = async (token, fd) => {
 };
 
 export const uploadFoto = async (token, fd) => {  
-  console.log("FormData contents:");
-    fd.forEach((value, key) => {
-        console.log(`${key}:`, value);
-    });
   try{
     
     return await axios.post(`${baseUrl}/v1/albuns/set-photo`, fd, {
@@ -160,7 +149,6 @@ export const uploadFoto = async (token, fd) => {
 
 export const deleteFoto = async (token, fd) => {  
   try{
-    console.log('fotoDelete: ', fd);
     
     return await axios.patch(`${baseUrl}/v1/albuns/delete-photo`, fd, {
       headers: {

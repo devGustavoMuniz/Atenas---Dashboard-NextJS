@@ -94,7 +94,6 @@ const SingleAlbumPage = () => {
                 return acc;
             }, []);
 
-            console.log(selectedEventos);
             
             const albumG = {
                 id: album.id,
@@ -105,7 +104,6 @@ const SingleAlbumPage = () => {
                 evento: selectedEventos
             }
 
-            console.log(albumG);
             
             
             const response = await handleUpdateAlbum(token, albumG);
