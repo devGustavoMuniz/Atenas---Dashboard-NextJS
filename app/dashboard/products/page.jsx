@@ -86,7 +86,7 @@ const ProductsPage = () => {
         <thead>
           <tr>
             <td>N° Contrato</td>
-            <td>Nome do Aluno</td>
+            <td>Nome do Usuário</td>
             <td>Tipo do Álbum</td>
             <td>Cadastrado em</td>
             <td>Ações</td>
