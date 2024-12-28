@@ -75,6 +75,7 @@ const UsersPage = () => {
       <table className={styles.table}>
         <thead>
           <tr>
+            <td>N° Contrato</td>
             <td>Nome</td>
             <td>Email</td>
             <td>Telefone</td>
@@ -93,9 +94,10 @@ const UsersPage = () => {
                     height={40}
                     className={styles.userImage}
                   />
-                  {user.nomeUsuario}
+                  {user.numeroContrato}
                 </div>
               </td>
+              <td>{user.nomeUsuario}</td>
               <td>{user.email}</td>
               <td>{user.telefone}</td>
               <td>
