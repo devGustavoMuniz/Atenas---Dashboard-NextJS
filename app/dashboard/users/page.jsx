@@ -1,6 +1,5 @@
 "use client";
 
-import Search from "../../ui/dashboard/search/search";
 import styles from "../../ui/dashboard/users/users.module.css";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,20 +8,24 @@ import { handleDeleteUser, handlerUser } from '../../lib';
 import { useRouter, redirect } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { MdSearch } from "react-icons/md";
+import { useDebouncedCallback } from "use-debounce";
 
 const UsersPage = () => {
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const router = useRouter();
 
-  useEffect(() => {
-    const handleUser = async () => {
-      const token = localStorage.getItem('token');
-      const response = await handlerUser(token);
-      setUsers(response);
-    };
+  const handleUser = async () => {
+    const token = localStorage.getItem('token');
+    const response = await handlerUser(token);
+    setUsers(response);
+    setFilteredUsers(response);
+  };
 
+  useEffect(() => {
     handleUser();
   }, []);
 
@@ -58,6 +61,20 @@ const UsersPage = () => {
       }
     }
   };
+  
+  const handleSearch = useDebouncedCallback((e) => {
+    const value = e.target.value.trim();
+    console.log('value > ', value);
+    
+    if (value) {
+      const filtered = users.filter((user) =>
+        user.numeroContrato.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredUsers(filtered);
+    } else {
+      setFilteredUsers(users);
+    }
+  }, 300);
 
   const handleCancelDelete = () => {
     setShowModal(false);
@@ -67,7 +84,15 @@ const UsersPage = () => {
   return (
     <div className={styles.container}>
       <div className={styles.top}>
-        <Search placeholder="Busque por um usuário..." />
+        <div className={styles.search}>
+          <MdSearch />
+          <input
+            type="text"
+            placeholder="Busque por um usuário..."
+            className={styles.input}
+            onChange={handleSearch}
+          />
+        </div>
         <Link href="/dashboard/users/add">
           <button className={styles.addButton}>Adicionar novo</button>
         </Link>
@@ -83,7 +108,7 @@ const UsersPage = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
+          {filteredUsers.map((user) => (
             <tr key={user.email}>
               <td>
                 <div className={styles.user}>

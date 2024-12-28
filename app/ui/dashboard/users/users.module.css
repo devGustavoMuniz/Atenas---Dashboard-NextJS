@@ -104,3 +104,20 @@ color: black !important;
   border-radius: 5px;
   cursor: pointer;
 }
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #1e1d1d;
+  padding: 14px 28px;
+  border-radius: 10px;
+  width: max-content;
+}
+
+.search input {
+  background-color: transparent;
+  border: none;
+  color: var(--text);
+  outline: none;
+}

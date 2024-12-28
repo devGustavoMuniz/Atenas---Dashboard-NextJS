@@ -2,31 +2,32 @@
 
 import Image from "next/image";
 import styles from "../../ui/dashboard/products/products.module.css";
-import Search from "../../ui/dashboard/search/search";
 import { useEffect, useState } from 'react';
 import Link from "next/link";
 import { handleDeleteAlbum, handlerAlbum } from '../../lib';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter, redirect } from 'next/navigation';
+import { MdSearch } from "react-icons/md";
+import { useDebouncedCallback } from "use-debounce";
 
 const ProductsPage = () => {
   const [albums, setAlbums] = useState([]);
+  const [filteredAlbums, setFilteredAlbums] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [albumToDelete, setAlbumToDelete] = useState(null);
   const router = useRouter();
 
+  const handleAlbum = async () => {
+    const token = localStorage.getItem('token');
+    const response = await handlerAlbum(token);
+    setAlbums(response);
+    setFilteredAlbums(response);
+  };
+
   useEffect(() => {
-    const handleAlbum = async () => {
-      const token = localStorage.getItem('token');
-      const response = await handlerAlbum(token);
-      setAlbums(response);
-    };
     handleAlbum();
   }, []);
-
-
-  
 
   const setSingleAlbumOnStorage = ({ nomeAluno, numeroContrato }) => {
     const album = albums.find((album) => album.nomeAluno === nomeAluno && album.numeroContrato === numeroContrato);
@@ -60,6 +61,7 @@ const ProductsPage = () => {
           toast("Álbum excluído com sucesso!");
           const updatedResponse = await handlerAlbum(token);
           setAlbums(updatedResponse);
+          setFilteredAlbums(updatedResponse);
         } else {
           toast("Erro ao excluir álbum");
         }
@@ -69,6 +71,18 @@ const ProductsPage = () => {
     }
   };
 
+  const handleSearch = useDebouncedCallback((e) => {
+    const value = e.target.value.toLowerCase();
+    if (value) {
+      const filtered = albums.filter((album) =>
+        album.numeroContrato.toLowerCase().includes(value)
+      );
+      setFilteredAlbums(filtered);
+    } else {
+      setFilteredAlbums(albums);
+    }
+  }, 300);
+
   const handleCancelDelete = () => {
     setShowModal(false);
     setAlbumToDelete(null);
@@ -77,7 +91,15 @@ const ProductsPage = () => {
   return (
     <div className={styles.container}>
       <div className={styles.top}>
-        <Search placeholder="Busque por um álbum..." />
+        <div className={styles.search}>
+          <MdSearch />
+          <input
+            type="text"
+            placeholder="Busque por um álbum..."
+            className={styles.input}
+            onChange={handleSearch}
+          />
+        </div>
         <Link href="/dashboard/products/add">
           <button className={styles.addButton}>Adicionar novo</button>
         </Link>
@@ -93,7 +115,7 @@ const ProductsPage = () => {
           </tr>
         </thead>
         <tbody>
-          {albums.map((album) => (
+          {filteredAlbums.map((album) => (
             <tr key={album.nomeAluno}>
               <td>
                 <div className={styles.product}>
