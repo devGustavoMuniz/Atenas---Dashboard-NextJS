@@ -19,12 +19,12 @@ const SingleAlbumPage = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(false);
     const [eventTypes, setEventTypes] = useState({
-        Passeio: false,
-        Baile: false,
-        Missa: false,
-        Culto: false,
-        Colação: false,
-        Identificação: false,
+        passeio: false,
+        baile: false,
+        missa: false,
+        culto: false,
+        colacao: false,
+        identificacao: false,
     });
 
     useEffect(() => {
@@ -40,12 +40,12 @@ const SingleAlbumPage = () => {
         
         
         setEventTypes({
-            Passeio: eventosComIsExist.includes('passeio'),
-            Baile: eventosComIsExist.includes('baile'),
-            Missa: eventosComIsExist.includes('missa'),
-            Culto: eventosComIsExist.includes('culto'),
-            Colação: eventosComIsExist.includes('colacao'),
-            Identificação: eventosComIsExist.includes('identificacao'),
+            passeio: eventosComIsExist.includes('passeio'),
+            baile: eventosComIsExist.includes('baile'),
+            missa: eventosComIsExist.includes('missa'),
+            culto: eventosComIsExist.includes('culto'),
+            colacao: eventosComIsExist.includes('colacao'),
+            identificacao: eventosComIsExist.includes('identificacao'),
         });
 
     

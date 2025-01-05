@@ -17,6 +17,15 @@ const Transactions = () => {
     handleUser();
   }, []);
 
+  const formatDate = (dateString) => {
+    const [datePart, timePart] = dateString.split(" ");
+    const [day, month, year] = datePart.split("-");
+    const shortYear = year.slice(2);
+    const [hour, minute] = timePart.split(":");
+
+    return `${day}/${month}/${shortYear} - ${hour}:${minute}h`;
+  };
+
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Últimos Registros</h2>
@@ -46,7 +55,7 @@ const Transactions = () => {
               <td>
                 {user.email}
               </td>
-              <td>{user.createdAt}</td>
+              <td>{formatDate(user.createdAt)}</td>
             </tr>
           ))}
           

@@ -88,6 +88,15 @@ const ProductsPage = () => {
     setAlbumToDelete(null);
   };
 
+  const formatDate = (dateString) => {
+    const [datePart, timePart] = dateString.split(" ");
+    const [day, month, year] = datePart.split("-");
+    const shortYear = year.slice(2);
+    const [hour, minute] = timePart.split(":");
+
+    return `${day}/${month}/${shortYear} - ${hour}:${minute}h`;
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.top}>
@@ -131,7 +140,7 @@ const ProductsPage = () => {
               </td>
               <td>{album.nomeAluno}</td>
               <td>{album.tipoAlbum}</td>
-              <td>{album.createdAt}</td>
+              <td>{formatDate(album.createdAt)}</td>
               <td>
                 <div className={styles.buttons}>
                   <button

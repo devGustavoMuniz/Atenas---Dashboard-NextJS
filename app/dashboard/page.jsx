@@ -4,7 +4,7 @@ import Card from "../ui/dashboard/card/card";
 import styles from "../ui/dashboard/dashboard.module.css";
 import { useEffect, useState } from 'react';
 import Transactions from "../ui/dashboard/transactions/transactions";
-import { handlerUser } from '../lib';
+import { handlerUser, handlerAlbum } from '../lib';
 
 const Dashboard = () => {
   const [cards, setCards] = useState([]);
@@ -12,6 +12,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       const allUsersData = await handlerUser(localStorage.getItem('token'));
+      const allAlbumsData = await handlerAlbum(localStorage.getItem('token'));
       setCards([
         {
           id: 1,
@@ -20,8 +21,8 @@ const Dashboard = () => {
         },
         {
           id: 2,
-          title: "Usuários totais",
-          number: allUsersData.length,
+          title: "Álbuns totais",
+          number: allAlbumsData.length,
         },
       ]);
     };

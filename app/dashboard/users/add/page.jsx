@@ -17,6 +17,7 @@ const AddUserPage = () => {
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [croppedImage, setCroppedImage] = useState(null);
+  const [showPhotoSection, setShowPhotoSection] = useState(false); // Novo estado
 
   const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels);
@@ -27,7 +28,7 @@ const AddUserPage = () => {
     const reader = new FileReader();
 
     reader.onloadend = () => {
-      setImageSrc(reader.result); // Exibe a imagem no Cropper
+      setImageSrc(reader.result);
       setUser(prevUser => ({
         ...prevUser,
         file: file
@@ -35,33 +36,17 @@ const AddUserPage = () => {
     };
 
     if (file) {
-      reader.readAsDataURL(file); // Lê o arquivo como base64
+      reader.readAsDataURL(file);
     }
   };
-
-  const blobUrlToBase64 = (blobUrl, callback) => {
-    if (typeof window !== "undefined") {
-        fetch(blobUrl)
-            .then(response => response.blob())
-            .then(blob => {
-                const reader = new FileReader();
-                reader.onloadend = () => callback(null, reader.result);
-                reader.onerror = (err) => callback(err, null);
-                reader.readAsDataURL(blob);
-            })
-            .catch(err => callback(err, null));
-    }
-  };
-  
 
   const showCroppedImage = useCallback(async () => {
     try {
       const croppedImgBlobUrl = await getCroppedImg(imageSrc, croppedAreaPixels);
-      const croppedImgBase64 = await blobUrlToBase64(croppedImgBlobUrl);
-      setCroppedImage(croppedImgBase64);
+      setCroppedImage(croppedImgBlobUrl);
       setUser(prevUser => ({
         ...prevUser,
-        foto: croppedImgBase64,
+        foto: croppedImgBlobUrl,
       }));
       toast("Imagem cortada com sucesso!");
       setImageSrc(null);
@@ -79,83 +64,92 @@ const AddUserPage = () => {
     }));
   };
 
-  const dataURLtoFile = (dataurl, filename) => {
-    if (typeof window !== "undefined") {
-        const arr = dataurl.split(',');
-        const mime = arr[0].match(/:(.*?);/)[1];
-        const binary = atob(arr[1]);
-        let binaryString = '';
-
-        // Criação da string binária
-        for (let i = 0; i < binary.length; i++) {
-            binaryString += String.fromCharCode(binary.charCodeAt(i));
-        }
-
-        // Criação do arquivo usando a string binária em vez de Uint8Array
-        return new File([binaryString], filename, { type: mime });
-    }
-  };
+  const dataURLtoFile = (dataUrl, fileName) => {
+    const arr = dataUrl.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
   
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+  
+    return new File([u8arr], fileName, { type: mime });
+  };
 
   const handleSubmit = async () => {
     const token = localStorage.getItem('token');
     if (!token) {
       redirect('/login');
-    } else {
-      const fd = new FormData();
-      fd.append('image', croppedImage ? dataURLtoFile(croppedImage, 'profile.jpg') : user.file);
-      fd.append('numeroContrato', String(user.numeroContrato));
-      fd.append('nomeUsuario', String(user.nomeUsuario));
-      fd.append('turma', String(user.turma));
-      fd.append('telefone', String(user.telefone));
-      fd.append('nomeEscola', String(user.nomeEscola));
-      fd.append('email', String(user.email));
-      fd.append('senha', String(user.senha));
-      fd.append('isAdm', user.isAdm ? 'true' : 'false');
+      return;
+    }
   
-      const response = await handleAddUser(token, fd);
-      if (response.status === 201) {
-        toast("Usuário adicionado com sucesso!");
-      } else {
-        toast("Erro ao adicionar usuário");
-      }
+    const fd = new FormData();
+    
+    // Converte o blob URL em um arquivo, se necessário
+    if (croppedImage) {
+      const response = await fetch(croppedImage);
+      const blob = await response.blob();
+      fd.append('image', new File([blob], 'profile.jpg', { type: blob.type }));
+    } else if (user.file) {
+      fd.append('image', user.file);
+    }
+  
+    fd.append('numeroContrato', String(user.numeroContrato));
+    fd.append('nomeUsuario', String(user.nomeUsuario));
+    fd.append('turma', String(user.turma));
+    fd.append('telefone', String(user.telefone));
+    fd.append('nomeEscola', String(user.nomeEscola));
+    fd.append('email', String(user.email));
+    fd.append('senha', String(user.senha));
+    fd.append('isAdm', user.isAdm ? 'true' : 'false');
+  
+    const response = await handleAddUser(token, fd);
+    if (response.status === 201) {
+      toast("Usuário adicionado com sucesso!");
+    } else {
+      toast("Erro ao adicionar usuário");
     }
   };
-  
 
   return (
-    <div className={styles.container}>
-      <div className={styles.form}>
-        <input type="text" placeholder="Número do Contrato" name="numeroContrato" required onChange={handleChange} />
-        <input type="text" placeholder="Nome da escola" name="nomeEscola" required onChange={handleChange} />
-        <input type="text" placeholder="Nome" name="nomeUsuario" required onChange={handleChange} />
-        <input type="email" placeholder="Email" name="email" required onChange={handleChange} />
-        <input type="text" placeholder="Turma" name="turma" required onChange={handleChange} />
+    <div className={styles.mainWrapper}>
+      <div className={styles.container}>
+        {!showPhotoSection ? (
+          // Renderização do formulário
+          <div className={styles.form}>
+            <input type="text" placeholder="Número do Contrato" name="numeroContrato" required onChange={handleChange} />
+            <input type="text" placeholder="Nome da escola" name="nomeEscola" required onChange={handleChange} />
+            <input type="text" placeholder="Nome" name="nomeUsuario" required onChange={handleChange} />
+            <input type="email" placeholder="Email" name="email" required onChange={handleChange} />
+            <input type="text" placeholder="Turma" name="turma" required onChange={handleChange} />
 
-        <div className={styles.inputPasswordWrapper}>
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder="Senha"
-            name="senha"
-            className={styles.inputPassword}
-            required
-            onChange={handleChange} 
-          />
-          <label className={styles.labelShowPassword} onClick={() => setShowPassword(!showPassword)}>
-            Mostrar
-          </label>
-        </div>
+            <div className={styles.inputPasswordWrapper}>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Senha"
+                name="senha"
+                className={styles.inputPassword}
+                required
+                onChange={handleChange}
+              />
+              <label className={styles.labelShowPassword} onClick={() => setShowPassword(!showPassword)}>
+                Mostrar
+              </label>
+            </div>
 
-        <input type="phone" placeholder="Telefone" name="telefone" onChange={handleChange} />
-        <select name="isAdm" id="isAdm" onChange={handleChange}>
-          <option value=''>
-            Tipo de Usuário
-          </option>
-          <option value={true}>Administrador</option>
-          <option value={false}>Formando</option>
-        </select>
-
-        <div className={styles.profilePhotoWrapper}>
+            <input type="phone" placeholder="Telefone" name="telefone" onChange={handleChange} />
+            <select name="isAdm" id="isAdm" onChange={handleChange}>
+              <option value=''>Tipo de Usuário</option>
+              <option value={true}>Administrador</option>
+              <option value={false}>Formando</option>
+            </select>
+            <button onClick={() => setShowPhotoSection(true)}>Selecionar Foto</button>
+          </div>
+        ) : (
+          // Renderização da seção de foto
+          <div className={styles.profilePhotoWrapper}>
             {!imageSrc && (
               <>
                 <div
@@ -165,7 +159,7 @@ const AddUserPage = () => {
                     backgroundImage: croppedImage ? `url(${croppedImage})` : 'url(/noavatar.png)',
                   }}
                 ></div>
-                <label htmlFor="profilePhotoInput">Enviar Foto</label>
+                <label htmlFor="profilePhotoInput">Selecionar Imagem</label>
                 <input type="file" id="profilePhotoInput" onChange={handleFileInputChange} hidden />
               </>
             )}
@@ -189,14 +183,15 @@ const AddUserPage = () => {
                     }}
                   />
                 </div>
-                <button onClick={showCroppedImage}>Cortar e Usar</button>
+                <button onClick={showCroppedImage}>Selecionar Imagem</button>
               </>
-          )}
-        </div>
-        <button onClick={handleSubmit}>Adicionar Usuário</button>
+            )}
+            <button className={styles.purpleBtn} onClick={() => setShowPhotoSection(false)}>Alterar Dados</button>
+            <button className={styles.greenBtn} onClick={handleSubmit}>Adicionar Usuário</button>
+          </div>
+        )}
+        <ToastContainer position="top-center" theme="dark" />
       </div>
-
-      <ToastContainer position="top-center" theme="dark" />
     </div>
   );
 };

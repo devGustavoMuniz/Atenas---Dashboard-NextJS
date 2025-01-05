@@ -16,8 +16,8 @@ const AddProductPage = () => {
     baile: false,
     missa: false,
     culto: false,
-    colação: false,
-    identificação: false,
+    colacao: false,
+    identificacao: false,
   });
 
   const router = useRouter();
