@@ -26,9 +26,9 @@ export const validate = async (token) => {
   }
 };
 
-export const getAllUsers = async (token) => {
+export const getAllUsers = async (token, searchParam, offset,  limit,) => {
   try{
-    const res = await axios.get(`${baseUrl}/v1/user/getAll`, {
+    const res = await axios.get(`${baseUrl}/v1/user/getAll/${offset}/${limit}?numContrato=${searchParam}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
