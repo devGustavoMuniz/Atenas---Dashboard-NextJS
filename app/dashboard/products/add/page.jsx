@@ -4,7 +4,7 @@ import styles from "../../../ui/dashboard/products/addProduct/addProduct.module.
 import { useState, useEffect } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { handleAddAlbum, handlerUser } from "../../../lib";
 
 const AddProductPage = () => {
@@ -70,10 +70,9 @@ const AddProductPage = () => {
     const response = await handleAddAlbum(token, albumG);
     setLoading(false);
     if (response.status === 201) {
-      toast("Album adicionado com sucesso!");
-    } else {
-      toast("Erro ao adicionar álbum");
+      redirect('/dashboard/products');
     }
+    toast("Erro ao adicionar álbum");
   };
 
   const usersOption = users.map(user => (
