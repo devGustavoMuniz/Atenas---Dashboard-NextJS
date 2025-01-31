@@ -113,7 +113,9 @@ const ProductsPage = () => {
           <button className={styles.addButton}>Adicionar novo</button>
         </Link>
       </div>
-      <table className={styles.table}>
+
+      {filteredAlbums.length === 0 ? (<p className={styles.notFound}>Nenhum album encontrado</p>) : (
+        <table className={styles.table}>
         <thead>
           <tr>
             <td>N° Contrato</td>
@@ -166,7 +168,9 @@ const ProductsPage = () => {
             </tr>
           ))}
         </tbody>
-      </table>
+        </table>
+      )}
+      
 
       {/* Modal de confirmação */}
       {showModal && (

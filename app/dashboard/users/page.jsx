@@ -97,54 +97,57 @@ const UsersPage = () => {
           <button className={styles.addButton}>Adicionar novo</button>
         </Link>
       </div>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <td>N° Contrato</td>
-            <td>Nome</td>
-            <td>Email</td>
-            <td>Telefone</td>
-            <td>Ações</td>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredUsers.map((user) => (
-            <tr key={user.email}>
-              <td>
-                <div className={styles.user}>
-                  <Image
-                    src={user.foto?.fotoAssinada || "/noavatar.png"}
-                    alt=""
-                    width={40}
-                    height={40}
-                    className={styles.userImage}
-                  />
-                  {user.numeroContrato}
-                </div>
-              </td>
-              <td>{user.nomeUsuario}</td>
-              <td>{user.email}</td>
-              <td>{user.telefone}</td>
-              <td>
-                <div className={styles.buttons}>
-                  <button
-                    className={`${styles.button} ${styles.view}`}
-                    onClick={() => setSingleUserOnStorage({ nome: user.nomeUsuario, email: user.email })}
-                  >
-                    Ver mais
-                  </button>
-                  <button
-                    className={`${styles.button} ${styles.delete}`}
-                    onClick={() => confirmDeleteUser({ nomeUsuario: user.nomeUsuario, email: user.email })}
-                  >
-                    Excluir
-                  </button>
-                </div>
-              </td>
+
+      {filteredUsers.length === 0 ? (<p className={styles.notFound}>Nenhum album encontrado</p>) : (
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <td>N° Contrato</td>
+              <td>Nome</td>
+              <td>Email</td>
+              <td>Telefone</td>
+              <td>Ações</td>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredUsers.map((user) => (
+              <tr key={user.email}>
+                <td>
+                  <div className={styles.user}>
+                    <Image
+                      src={user.foto?.fotoAssinada || "/noavatar.png"}
+                      alt=""
+                      width={40}
+                      height={40}
+                      className={styles.userImage}
+                    />
+                    {user.numeroContrato}
+                  </div>
+                </td>
+                <td>{user.nomeUsuario}</td>
+                <td>{user.email}</td>
+                <td>{user.telefone}</td>
+                <td>
+                  <div className={styles.buttons}>
+                    <button
+                      className={`${styles.button} ${styles.view}`}
+                      onClick={() => setSingleUserOnStorage({ nome: user.nomeUsuario, email: user.email })}
+                    >
+                      Ver mais
+                    </button>
+                    <button
+                      className={`${styles.button} ${styles.delete}`}
+                      onClick={() => confirmDeleteUser({ nomeUsuario: user.nomeUsuario, email: user.email })}
+                    >
+                      Excluir
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
 
       {/* Modal de confirmação */}
       {showModal && (
