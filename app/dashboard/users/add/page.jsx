@@ -17,7 +17,7 @@ const AddUserPage = () => {
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [croppedImage, setCroppedImage] = useState(null);
-  const [showPhotoSection, setShowPhotoSection] = useState(false); // Novo estado
+  const [showPhotoSection, setShowPhotoSection] = useState(false);
 
   const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels);
@@ -64,25 +64,10 @@ const AddUserPage = () => {
     }));
   };
 
-  const dataURLtoFile = (dataUrl, fileName) => {
-    const arr = dataUrl.split(',');
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-  
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-  
-    return new File([u8arr], fileName, { type: mime });
-  };
-
   const handleSubmit = async () => {
     const token = localStorage.getItem('token');
     if (!token) {
       redirect('/login');
-      return;
     }
   
     const fd = new FormData();
@@ -159,6 +144,7 @@ const AddUserPage = () => {
                     backgroundImage: croppedImage ? `url(${croppedImage})` : 'url(/noavatar.png)',
                   }}
                 ></div>
+                
                 <label htmlFor="profilePhotoInput">Selecionar Imagem</label>
                 <input type="file" id="profilePhotoInput" onChange={handleFileInputChange} hidden />
               </>
@@ -186,8 +172,10 @@ const AddUserPage = () => {
                 <button onClick={showCroppedImage}>Selecionar Imagem</button>
               </>
             )}
+
             <button className={styles.purpleBtn} onClick={() => setShowPhotoSection(false)}>Alterar Dados</button>
             <button className={styles.greenBtn} onClick={handleSubmit}>Adicionar Usuário</button>
+
           </div>
         )}
         <ToastContainer position="top-center" theme="dark" />
