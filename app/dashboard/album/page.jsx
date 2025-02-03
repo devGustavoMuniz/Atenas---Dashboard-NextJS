@@ -7,6 +7,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { handlerUser } from "../../lib";
 import { redirect } from 'next/navigation';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 const SingleAlbumPage = () => {
     const [album, setAlbum] = useState({
@@ -26,6 +29,8 @@ const SingleAlbumPage = () => {
         colacao: false,
         identificacao: false,
     });
+    
+    const [label, setLabel] = useState('');
 
     useEffect(() => {
         const storedAlbum = JSON.parse(localStorage.getItem('album'));
@@ -63,6 +68,7 @@ const SingleAlbumPage = () => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         if (name == 'numeroContrato') {
+            setLabel(value);
             users.map((user) => {
                 if (user.numeroContrato == value) {
                     setAlbum(prevUser => ({
@@ -125,12 +131,7 @@ const SingleAlbumPage = () => {
     };
 
     const usersOption = users.map(user => (
-        <option
-            key={user.numeroContrato}
-            value={user.numeroContrato}
-        >
-            {`${user.nomeUsuario} (${user.numeroContrato})`}
-        </option>
+        <MenuItem key={user.numeroContrato} value={user.numeroContrato}>{`${user.nomeUsuario} (${user.numeroContrato})`}</MenuItem>
     ));
 
     return (
@@ -140,15 +141,18 @@ const SingleAlbumPage = () => {
 
                 <div className={styles.formContainer}>
                     <div className={styles.form}>
-                        <select
-                        name="numeroContrato"
-                        required
-                        value={album.numeroContrato || ""}
-                        onChange={handleChange}
-                        >
-                            <option value="" disabled>Selecione um aluno</option>
+                        <FormControl fullWidth>
+                            <Select
+                            name="numeroContrato"
+                            className={styles.bgBlack}
+                            onChange={handleChange}
+                            displayEmpty
+                            value={album.numeroContrato || ""}
+                            >
+                            <MenuItem value="">Selecione o Aluno do Álbum</MenuItem>
                             {usersOption}
-                        </select>
+                            </Select>
+                        </FormControl>
 
                         <div className={styles.numPageWrapper}>
                             <input className={styles.input} type="text" placeholder="Número mínimo de páginas" name="minFotos" value={album.minFotos} required onChange={handleChange} />

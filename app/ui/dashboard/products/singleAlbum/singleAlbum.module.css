@@ -233,3 +233,14 @@
 .checkboxLabel:hover::before {
   border-color: #fcf119;
 }
+
+.bgBlack {
+  background-color: var(--bg);
+  color: var(--text);
+  padding-left: 20px;
+}
+
+.bgBlack div,
+.bgBlack label {
+  color: var(--text);
+}

@@ -6,9 +6,12 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { redirect, useRouter } from 'next/navigation';
 import { handleAddAlbum, handlerUser } from "../../../lib";
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 const AddProductPage = () => {
-  const [album, setAlbum] = useState('aaaaa');
+  const [album, setAlbum] = useState({});
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [eventTypes, setEventTypes] = useState({
@@ -19,6 +22,7 @@ const AddProductPage = () => {
     colacao: false,
     identificacao: false,
   });
+  const [label, setLabel] = useState('');
 
   const router = useRouter();
 
@@ -35,6 +39,9 @@ const AddProductPage = () => {
   // Seta os valores dos inputs nos albums
   const handleChange = (e) => {
     const { name, value } = e.target;
+    if (name === 'contratoEAluno') {
+      setLabel(value);
+    }
     setAlbum(prevUser => ({
       ...prevUser,
       [name]: value
@@ -76,7 +83,7 @@ const AddProductPage = () => {
   };
 
   const usersOption = users.map(user => (
-    <option key={user.numeroContrato + user.nomeUsuario} value={JSON.stringify({ nome: user.nomeUsuario, numeroContrato: user.numeroContrato })}>{`${user.nomeUsuario} (${user.numeroContrato})`}</option>
+    <MenuItem key={user.numeroContrato + user.nomeUsuario} value={JSON.stringify({ nome: user.nomeUsuario, numeroContrato: user.numeroContrato })}>{`${user.nomeUsuario} (${user.numeroContrato})`}</MenuItem>
   ));
 
   return (
@@ -88,10 +95,19 @@ const AddProductPage = () => {
           </div>
         )}
         <div className={styles.form}>
-          <select name="contratoEAluno" required onChange={handleChange}>
-            <option value="">Selecione o Aluno do Álbum</option>
-            {usersOption}
-          </select>
+          <FormControl fullWidth>
+            <Select
+              name="contratoEAluno"
+              className={styles.bgBlack}
+              onChange={handleChange}
+              displayEmpty
+              value={label}
+            >
+              <MenuItem value="">Selecione o Aluno do Álbum</MenuItem>
+              {usersOption}
+            </Select>
+          </FormControl>
+
           <div className={styles.numPageWrapper}>
             <input className={styles.input} type="text" placeholder="Mínimo de páginas" name="minFotos" required onChange={handleChange} />
             <input className={styles.input} type="text" placeholder="Tipo do Álbum" name="tipoAlbum" required onChange={handleChange} />
