@@ -26,7 +26,7 @@ export const validate = async (token) => {
   }
 };
 
-export const getAllUsers = async (token, searchParam, offset,  limit,) => {
+export const getAllUsers = async (token, searchParam = "", offset = 0,  limit = 99999) => {
   try{
     const res = await axios.get(`${baseUrl}/v1/user/getAll/${offset}/${limit}?numContrato=${searchParam}`, {
       headers: {
@@ -93,9 +93,9 @@ export const addAlbum = async (token, album) => {
   }
 };
 
-export const getAllAlbums = async (token) => {
+export const getAllAlbums = async (token, searchParam = "", offset = 0,  limit = 99999) => {
   try{
-    const res = await axios.get(`${baseUrl}/v1/albuns/getAll`, {
+    const res = await axios.get(`${baseUrl}/v1/albuns/getAll/${offset}/${limit}?numContrato=${searchParam}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }

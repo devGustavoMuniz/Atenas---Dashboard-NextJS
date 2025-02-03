@@ -82,7 +82,6 @@ const UsersPage = () => {
   
   const handleSearch = useDebouncedCallback((e) => {
     const value = e.target.value.trim();
-    console.log("value", value);
     
     if (value) {
       setSearchParam(value);

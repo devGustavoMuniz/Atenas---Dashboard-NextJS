@@ -1,8 +1,15 @@
 import { addAlbum, getAllAlbums, updateAlbum, deleteAlbum } from "../../lib";
 
-export const handlerAlbum = async (token) => {
-    const response = await getAllAlbums(token);
+export const handlerAlbum = async (token, searchParam, page, limit) => {
+    const response = await getAllAlbums(token, searchParam, page, limit);
     return response.status === 200 ? response.data.albuns : [];
+}
+
+export const handlerAlbumLength = async (token, searchParam, page, limit) => {
+    const response = await getAllAlbums(token, searchParam, page, limit);
+    console.log('res > ', response);
+    
+    return response.status === 200 ? response.data.count : 0;
 }
 
 export const handleAddAlbum = async (token, album) => {
