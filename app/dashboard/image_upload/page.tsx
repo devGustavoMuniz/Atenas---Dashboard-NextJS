@@ -288,6 +288,7 @@ export default function UploadPage() {
           </div>
 
           <div className={styles.fotosWrapper}>
+            {album?.eventos[activeTab].fotos.length === 0 && <p>Nenhuma foto cadastrada para este evento</p>}
             {album?.eventos[activeTab].fotos.map((foto) => (
               <div key={foto.id} className={styles.imageContainer}>
               <Image loading="lazy" src={foto.fotoAssinada} alt={foto.filename} width={100} height={100} />
