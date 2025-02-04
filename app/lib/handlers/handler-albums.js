@@ -7,7 +7,6 @@ export const handlerAlbum = async (token, searchParam, page, limit) => {
 
 export const handlerAlbumLength = async (token, searchParam, page, limit) => {
     const response = await getAllAlbums(token, searchParam, page, limit);
-    console.log('res > ', response);
     
     return response.status === 200 ? response.data.count : 0;
 }

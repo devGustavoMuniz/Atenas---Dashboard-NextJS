@@ -86,7 +86,6 @@ const ProductsPage = () => {
 
   const handleSearch = useDebouncedCallback((e) => {
     const value = e.target.value.toLowerCase();
-    console.log('value > ', value);
     
 
     if (value) {
