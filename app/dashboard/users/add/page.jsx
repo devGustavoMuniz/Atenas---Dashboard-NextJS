@@ -22,9 +22,7 @@ const AddUserPage = () => {
   const [showPhotoSection, setShowPhotoSection] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      $("#phone").mask("(00) 00000-0000");
-    }
+    $("#phone").mask("(00) 00000-0000");
   }, []);
 
   const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {

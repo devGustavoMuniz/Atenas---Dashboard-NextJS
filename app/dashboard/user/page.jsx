@@ -22,9 +22,7 @@ const SingleUserPage = () => {
     const [showPhotoSection, setShowPhotoSection] = useState(false);
 
     useEffect(() => {
-        if (typeof window !== "undefined") {
-            $("#phone").mask("(00) 00000-0000");
-          }
+        $("#phone").mask("(00) 00000-0000");
         setUser(JSON.parse(localStorage.getItem('user')));
     }, []);
 
@@ -56,21 +54,6 @@ const SingleUserPage = () => {
     const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
         setCroppedAreaPixels(croppedAreaPixels);
       }, []);
-
-    // Função modificada para evitar o uso de Promise, utilizando callbacks
-    const blobUrlToBase64 = (blobUrl, callback) => {
-        if (typeof window !== "undefined") {
-            fetch(blobUrl)
-                .then(response => response.blob())
-                .then(blob => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => callback(null, reader.result);
-                    reader.onerror = (err) => callback(err, null);
-                    reader.readAsDataURL(blob);
-                })
-                .catch(err => callback(err, null));
-        }
-    };
 
     const showCroppedImage = useCallback(async () => {
         try {
