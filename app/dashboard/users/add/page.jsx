@@ -8,8 +8,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import { redirect } from 'next/navigation';
 import Cropper from 'react-easy-crop';
 import getCroppedImg from "../../../lib/getCroppedImg";
-import $ from "jquery";
-import "jquery-mask-plugin";
+import dynamic from "next/dynamic";
+
+const jQuery = dynamic(() => import("jquery"), { ssr: false });
 
 const AddUserPage = () => {
   const [user, setUser] = useState({});
@@ -22,7 +23,9 @@ const AddUserPage = () => {
   const [showPhotoSection, setShowPhotoSection] = useState(false);
 
   useEffect(() => {
-    $("#phone").mask("(00) 00000-0000");
+    jQuery.then(($) => {
+      $("#phone").mask("(00) 00000-0000");
+    });
   }, []);
 
   const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
