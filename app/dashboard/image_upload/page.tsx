@@ -266,7 +266,7 @@ export default function UploadPage() {
 
       {!isEditing && (
         <div className={styles.container}>
-          <h1 className={styles.title}>Álbum de {album?.nomeAluno}</h1>
+          <h1 className={styles.title}>{album?.nomeAluno} ({album?.numeroContrato})</h1>
 
           <div className={styles.tabWrapper}>
             <select
