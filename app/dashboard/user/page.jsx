@@ -8,9 +8,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { redirect } from 'next/navigation';
 import Cropper from 'react-easy-crop';
 import getCroppedImg from "../../lib/getCroppedImg";
-import dynamic from "next/dynamic";
-
-const jQuery = dynamic(() => import("jquery"), { ssr: false });
 
 const SingleUserPage = () => {
     const [user, setUser] = useState([]);
@@ -23,9 +20,6 @@ const SingleUserPage = () => {
     const [showPhotoSection, setShowPhotoSection] = useState(false);
 
     useEffect(() => {
-        jQuery.then(($) => {
-            $("#phone").mask("(00) 00000-0000");
-        });
         setUser(JSON.parse(localStorage.getItem('user')));
     }, []);
 
