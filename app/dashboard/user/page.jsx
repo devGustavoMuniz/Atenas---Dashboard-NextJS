@@ -110,6 +110,7 @@ const SingleUserPage = () => {
             fd.append('nomeEscola', String(user.nomeEscola));
             fd.append('email', String(user.email));
             fd.append('isAdm', user.isAdm);
+            if (user.senha) fd.append('senha', user.senha);
             const response = await handleUpdateUser(token, fd);
             if (response.status === 200) {
                 toast("Usuário atualizado com sucesso!");
