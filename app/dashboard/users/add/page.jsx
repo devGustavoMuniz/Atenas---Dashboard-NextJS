@@ -96,7 +96,7 @@ const AddUserPage = () => {
     fd.append('nomeEscola', String(user.nomeEscola));
     fd.append('email', String(user.email));
     fd.append('senha', String(user.senha));
-    fd.append('isAdm', user.isAdm ? 'true' : 'false');
+    fd.append('isAdm', user.isAdm);
   
     const response = await handleAddUser(token, fd);
     if (response.status === 201) {
