@@ -1,9 +1,21 @@
-import { addAlbum, getAllAlbums, updateAlbum, deleteAlbum } from "../../lib";
+import { addAlbum, getAllAlbums, updateAlbum, deleteAlbum, getAllUsers } from "../../lib";
 
 export const handlerAlbum = async (token, searchParam, page, limit) => {
     const response = await getAllAlbums(token, searchParam, page, limit);
-    return response.status === 200 ? response.data.albuns : [];
-}
+    const users = await getAllUsers(token);    
+
+    if (response.status !== 200) return [];
+
+    return response.data.albuns.map(album => {
+        const user = users.data.users.find(
+            user => 
+                user.numeroContrato === album.numeroContrato && 
+                user.nomeUsuario === album.nomeAluno
+        );
+        return { ...album, foto: user ? user.foto.fotoAssinada : null };
+    });
+};
+
 
 export const handlerAlbumLength = async (token, searchParam, page, limit) => {
     const response = await getAllAlbums(token, searchParam, page, limit);

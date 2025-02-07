@@ -40,8 +40,13 @@ const ProductsPage = () => {
       setCountAlbums(response);
     };
 
+    
+
     handleAlbumLength();
   }, [offset, searchParam]);
+
+  console.log("albums > ", albums);
+
 
   const setSingleAlbumOnStorage = ({ nomeAluno, numeroContrato }) => {
     const album = albums.find((album) => album.nomeAluno === nomeAluno && album.numeroContrato === numeroContrato);
@@ -147,7 +152,7 @@ const ProductsPage = () => {
                 <td>
                   <div className={styles.product}>
                     <Image
-                      src={"/logoAtenas.jpg"}
+                      src={album.foto || "/noavatar.png"}
                       alt=""
                       width={40}
                       height={40}
