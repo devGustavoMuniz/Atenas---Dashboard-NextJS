@@ -8,6 +8,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { redirect } from 'next/navigation';
 import Cropper from 'react-easy-crop';
 import getCroppedImg from "../../lib/getCroppedImg";
+import $ from "jquery";
+import "jquery-mask-plugin";
 
 const SingleUserPage = () => {
     const [user, setUser] = useState([]);
@@ -20,6 +22,9 @@ const SingleUserPage = () => {
     const [showPhotoSection, setShowPhotoSection] = useState(false);
 
     useEffect(() => {
+        if (typeof window !== "undefined") {
+            $("#phone").mask("(00) 00000-0000");
+          }
         setUser(JSON.parse(localStorage.getItem('user')));
     }, []);
 
@@ -147,7 +152,7 @@ const SingleUserPage = () => {
 
                         <div>
                             <label>Telefone:</label>
-                            <input type="text" name="telefone" value={user.telefone} onChange={handleChange} />
+                            <input type="text" name="telefone" id='phone' value={user.telefone} onChange={handleChange} />
                         </div>
 
                         <div>

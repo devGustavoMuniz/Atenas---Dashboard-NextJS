@@ -2,12 +2,14 @@
 
 import { handleAddUser } from "../../../lib";
 import styles from "../../../ui/dashboard/users/addUser/addUser.module.css";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { redirect } from 'next/navigation';
 import Cropper from 'react-easy-crop';
 import getCroppedImg from "../../../lib/getCroppedImg";
+import $ from "jquery";
+import "jquery-mask-plugin";
 
 const AddUserPage = () => {
   const [user, setUser] = useState({});
@@ -18,6 +20,12 @@ const AddUserPage = () => {
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [croppedImage, setCroppedImage] = useState(null);
   const [showPhotoSection, setShowPhotoSection] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      $("#phone").mask("(00) 00000-0000");
+    }
+  }, []);
 
   const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels);
@@ -124,7 +132,7 @@ const AddUserPage = () => {
               </label>
             </div>
 
-            <input type="phone" placeholder="Telefone" name="telefone" onChange={handleChange} />
+            <input type="phone" id="phone" placeholder="Telefone" name="telefone" onChange={handleChange} />
             <select name="isAdm" id="isAdm" onChange={handleChange}>
               <option value=''>Tipo de Usuário</option>
               <option value={true}>Administrador</option>
