@@ -90,6 +90,8 @@
   .fileList {
     list-style: none;
     padding: 0;
+    max-height: 250px;
+    overflow-y: auto;
   }
   
   .fileListItem {
