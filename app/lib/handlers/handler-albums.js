@@ -40,3 +40,12 @@ export const getAlbumById = async (token, albumId) => {
     const { data } = await getAllAlbums(token);
     return data.albuns.filter((album) => album.id == albumId);
 }
+
+export const getAlbumByContract = async (token, user) => {
+    const { data } = await getAllAlbums(token);
+    
+    return data.albuns.filter((album) =>
+        user.numeroContrato === album.numeroContrato && 
+        user.nomeUsuario === album.nomeAluno
+    );
+}

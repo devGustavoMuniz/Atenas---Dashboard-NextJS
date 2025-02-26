@@ -13,6 +13,9 @@ const Dashboard = () => {
     const fetchData = async () => {
       const allUsersData = await handlerUser(localStorage.getItem('token'));
       const allAlbumsData = await handlerAlbum(localStorage.getItem('token'));
+
+
+
       setCards([
         {
           id: 1,

@@ -1,0 +1,80 @@
+.eventTabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.wrapper button {
+    border-radius: 5px;
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    background: none;
+    color: #fff;
+    font-size: 16px;
+    border-bottom: 5px solid transparent;
+}
+
+.activeTab {
+    border-bottom: 5px solid #fcf119!important;
+}
+
+.wrapper {
+    background-color: var(--bgSoft);
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    height: 100%;
+}
+
+.wrapper p {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-gap: 1rem;
+    justify-items: center;
+    align-items: center;
+}
+
+.gallery img {
+    border-radius: 8px;
+    width: 100%;
+    max-width: 150px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.fullScreenImage {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 8px;
+}
+
+
+@media screen and (max-width: 650px){
+    .gallery{
+        display: block;
+    }
+    .tile{
+        margin-bottom: 1rem;
+    }
+}

@@ -11,51 +11,65 @@ import {
   MdSupervisedUserCircle,
   MdShoppingBag,
   MdLogout,
+  MdPhotoLibrary,
 } from "react-icons/md";
 import { useRouter } from 'next/navigation';
-
-const menuItems = [
-  {
-    title: "Menu",
-    list: [
-      {
-        title: "Dashboard",
-        path: "/dashboard",
-        icon: <MdDashboard />,
-      },
-      {
-        title: "Usuários",
-        path: "/dashboard/users",
-        icon: <MdSupervisedUserCircle />,
-      },
-      {
-        title: "Álbuns",
-        path: "/dashboard/products",
-        icon: <MdShoppingBag />,
-      },
-      // {
-      //   title: "Álbuns Físicos",
-      //   path: "/dashboard/album",
-      //   icon: <MdShoppingBag />,
-      // },
-    ],
-  },
-];
+import { getUserByUsername } from "../../../lib";
 
 const Sidebar = () => {
   const [user, setUser] = useState('');
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    !token && redirect('/login');
-    const decodedToken = jwt.decode(token);
-    setUser({
-      username: decodedToken.nomeUsuario,
-      foto: decodedToken.foto
-    })
+    const fetchData = async () => {
+      const token = localStorage.getItem('token');
+      !token && redirect('/login');
+      const decodedToken = jwt.decode(token);
+      const user = await getUserByUsername(token, decodedToken.nomeUsuario);
+      
+      localStorage.setItem('loggedUser', JSON.stringify(user));
+      setUser({
+        username: decodedToken.nomeUsuario,
+        foto: decodedToken.foto,
+        isAdm: user.isAdm
+      })
+
+      
+    }
+    fetchData();
   }, [])
 
   const router = useRouter();
+
+  const menuItems = [
+    {
+      title: "Menu",
+      list: user?.isAdm
+        ? [
+            {
+              title: "Dashboard",
+              path: "/dashboard",
+              icon: <MdDashboard />,
+            },
+            {
+              title: "Usuários",
+              path: "/dashboard/users",
+              icon: <MdSupervisedUserCircle />,
+            },
+            {
+              title: "Álbuns",
+              path: "/dashboard/products",
+              icon: <MdShoppingBag />,
+            },
+          ]
+        : [
+            {
+              title: "Galeria",
+              path: "/dashboard/gallery",
+              icon: <MdPhotoLibrary />,
+            },
+          ],
+    },
+  ];
 
   const logout = () => {
     localStorage.removeItem('token');

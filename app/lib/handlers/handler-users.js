@@ -21,3 +21,8 @@ export const handleAddUser = async (token, fd) => {
 export const handleDeleteUser = async (token, user) => {
     return await deleteUser(token, user);
 }
+
+export const getUserByUsername = async (token, nomeUsuario) => {
+    const response = await getAllUsers(token);
+    return response.data.users.find(user => user.nomeUsuario === nomeUsuario);
+};

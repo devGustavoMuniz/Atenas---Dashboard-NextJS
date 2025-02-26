@@ -18,6 +18,7 @@ const LoginForm = () => {
       const { token } = await login({ username, password });
       localStorage.setItem('token', token);
       router.push('/dashboard');
+      return;
     } catch (error) {
       setError('Erro ao fazer login: ' + error.message);
     }

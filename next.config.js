@@ -1,4 +1,5 @@
-/** @type {import('next').NextConfig} */
+const path = require("path");
+
 const nextConfig = {
   images: {
     unoptimized: true,
@@ -10,11 +11,17 @@ const nextConfig = {
     ],
   },
   webpack: (config) => {
-    config.resolve.fallback = {
-      ...config.resolve.fallback, // Preserva as configurações anteriores do Webpack
-      crypto: false,  // Desabilita o módulo "crypto" no lado do servidor
-      stream: false,  // Desabilita o módulo "stream" no lado do servidor
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "@libs": path.resolve(__dirname, "app/lib"),
     };
+
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      crypto: false,
+      stream: false,
+    };
+
     return config;
   },
 };
