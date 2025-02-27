@@ -11,33 +11,49 @@ const Dashboard = () => {
   const [cards, setCards] = useState([]);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const userData = JSON.parse(localStorage.getItem('loggedUser'));
-      console.log(userData);
-      
-      if (!userData.isAdm) {
-        router.push('/dashboard/gallery')
-      } else {
-        const allUsersData = await handlerUser(localStorage.getItem('token'));
-        const allAlbumsData = await handlerAlbum(localStorage.getItem('token'));
+  const [userData, setUserData] = useState(null);
 
-        setCards([
-          {
-            id: 1,
-            title: "Usuários totais",
-            number: allUsersData.length,
-          },
-          {
-            id: 2,
-            title: "Álbuns totais",
-            number: allAlbumsData.length,
-          },
-        ]);
+  useEffect(() => {
+      const storedUser = localStorage.getItem('loggedUser');
+      if (storedUser) {
+          setUserData(JSON.parse(storedUser));
       }
-    };
-    fetchData();
   }, []);
+
+  useEffect(() => {
+      if (userData === null) return;
+
+      const fetchData = async () => {
+          if (!userData?.isAdm) {
+              router.push('/dashboard/gallery');
+              return;
+          }
+
+          const token = localStorage.getItem('token');
+          if (!token) {
+              console.log("Token não encontrado!");
+              return;
+          }
+
+          const allUsersData = await handlerUser(token);
+          const allAlbumsData = await handlerAlbum(token);
+
+          setCards([
+              {
+                  id: 1,
+                  title: "Usuários totais",
+                  number: allUsersData.length,
+              },
+              {
+                  id: 2,
+                  title: "Álbuns totais",
+                  number: allAlbumsData.length,
+              },
+          ]);
+      };
+
+      fetchData();
+  }, [userData]);
 
   return (
     <div className={styles.wrapper}>
