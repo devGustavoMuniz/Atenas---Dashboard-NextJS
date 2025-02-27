@@ -9,16 +9,15 @@ import { useRouter } from 'next/navigation';
 
 const Dashboard = () => {
   const [cards, setCards] = useState([]);
-  const [user, setUser] = useState({});
   const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
       const userData = JSON.parse(localStorage.getItem('loggedUser'));
-      setUser(userData);
+      console.log(userData);
       
       if (!userData.isAdm) {
-        router.push('/dashboard/gallery');
+        router.push('/dashboard/gallery')
       } else {
         const allUsersData = await handlerUser(localStorage.getItem('token'));
         const allAlbumsData = await handlerAlbum(localStorage.getItem('token'));
@@ -39,8 +38,6 @@ const Dashboard = () => {
     };
     fetchData();
   }, []);
-
-  if (!user.isAdm) router.push('/dashboard/gallery');
 
   return (
     <div className={styles.wrapper}>
