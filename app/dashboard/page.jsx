@@ -14,46 +14,51 @@ const Dashboard = () => {
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-      const storedUser = localStorage.getItem('loggedUser');
-      if (storedUser) {
-          setUserData(JSON.parse(storedUser));
-      }
+    console.log('useEffect1');
+    
+    const storedUser = localStorage.getItem('loggedUser');
+    if (storedUser) {
+        setUserData(JSON.parse(storedUser));
+    }
+    console.log('useEffect1 fim');
   }, []);
+  
+  useEffect(() => {
+    console.log('useEffect2 > ', userData);
+    if (userData === null) return;
+
+    if (!userData?.isAdm) {
+        router.push('/dashboard/gallery');
+        return;
+    }
+    console.log('useEffect2 fim > ', userData);
+  }, [userData]);
 
   useEffect(() => {
-      if (userData === null) return;
+    console.log('useEffect3 > ', userData);
+    const fetchData = async () => {
+      const token = localStorage.getItem('token');
 
-      const fetchData = async () => {
-          if (!userData?.isAdm) {
-              router.push('/dashboard/gallery');
-              return;
-          }
+      const allUsersData = await handlerUser(token);
+      const allAlbumsData = await handlerAlbum(token);
 
-          const token = localStorage.getItem('token');
-          if (!token) {
-              console.log("Token não encontrado!");
-              return;
-          }
+      setCards([
+          {
+              id: 1,
+              title: "Usuários totais",
+              number: allUsersData.length,
+          },
+          {
+              id: 2,
+              title: "Álbuns totais",
+              number: allAlbumsData.length,
+          },
+      ]);
+    };
 
-          const allUsersData = await handlerUser(token);
-          const allAlbumsData = await handlerAlbum(token);
-
-          setCards([
-              {
-                  id: 1,
-                  title: "Usuários totais",
-                  number: allUsersData.length,
-              },
-              {
-                  id: 2,
-                  title: "Álbuns totais",
-                  number: allAlbumsData.length,
-              },
-          ]);
-      };
-
-      fetchData();
-  }, [userData]);
+    fetchData();
+    console.log('useEffect3 fim > ', userData);
+  }, []);
 
   return (
     <div className={styles.wrapper}>
