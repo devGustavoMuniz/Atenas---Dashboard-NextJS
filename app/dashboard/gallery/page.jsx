@@ -9,6 +9,18 @@ const Gallery = () => {
   const [photosByEvent, setPhotosByEvent] = useState({});
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [fullScreenImage, setFullScreenImage] = useState(null);
+  const [imageClasses, setImageClasses] = useState({});
+
+
+  const eventNamesMap = {
+    baile: "Baile",
+    colacao: "Colação",
+    culto: "Culto",
+    identificacao: "Identificação",
+    missa: "Missa",
+    passeio: "Passeio"
+  };
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,9 +42,8 @@ const Gallery = () => {
 
         setPhotosByEvent(formattedPhotos);
 
-        // Define automaticamente o primeiro evento como selecionado
-        const firstEvent = Object.keys(formattedPhotos)[0];
-        if (firstEvent) setSelectedEvent(firstEvent);
+        const selectedEventLS = localStorage.getItem('event');
+        if (selectedEventLS) setSelectedEvent(selectedEventLS);
       }
     };
 
@@ -48,6 +59,22 @@ const Gallery = () => {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  useEffect(() => {
+    const classifyImages = () => {
+      const newClasses = {};
+      Object.values(photosByEvent).flat().forEach((src, index) => {
+        const img = new Image();
+        img.src = src;
+        img.onload = () => {
+          newClasses[src] = img.width < img.height ? styles.portrait : "";
+          setImageClasses(prev => ({ ...prev, ...newClasses }));
+        };
+      });
+    };
+
+    if (Object.keys(photosByEvent).length > 0) classifyImages();
+  }, [photosByEvent]);
+
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
@@ -61,7 +88,7 @@ const Gallery = () => {
               className={selectedEvent === eventName ? styles.activeTab : styles.tab}
               onClick={() => setSelectedEvent(eventName)}
             >
-              {eventName}
+              {eventNamesMap[eventName] || eventName}
             </button>
           ))}
         </div>
@@ -74,8 +101,8 @@ const Gallery = () => {
                 key={index}
                 src={src}
                 alt={`Foto ${index}`}
-                className={styles.photo}
-                onClick={() => setFullScreenImage(src)} // Ao clicar, exibe a imagem em tela cheia
+                className={`${styles.photo} ${imageClasses[src] || ""}`}
+                onClick={() => setFullScreenImage(src)}
               />
             ))
           ) : (
@@ -89,7 +116,6 @@ const Gallery = () => {
         </div>
       )}
     </div>
-    
   );
 };
 

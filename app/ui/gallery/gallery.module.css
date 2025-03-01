@@ -35,19 +35,42 @@
 
 .gallery {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     grid-gap: 1rem;
     justify-items: center;
     align-items: center;
+    max-width: 100%;
 }
 
-.gallery img {
+.photo {
     border-radius: 8px;
     width: 100%;
-    max-width: 150px;
+    height: auto;
+    max-height: 300px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     cursor: pointer;
+    object-fit: contain;
 }
+
+.portrait {
+    width: auto;
+    height: 100%;
+    max-height: 300px;
+}
+
+/* Limite máximo de 4 fotos por linha */
+@media (min-width: 800px) {
+    .gallery {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 799px) {
+    .gallery {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+}
+
 
 
 .modal {
