@@ -36,7 +36,7 @@
 .gallery {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    grid-gap: 1rem;
+    grid-gap: 5rem;
     justify-items: center;
     align-items: center;
     max-width: 100%;
