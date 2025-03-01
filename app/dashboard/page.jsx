@@ -26,7 +26,9 @@ const Dashboard = () => {
       const decodedToken = jwt.decode(token);
       const userData = await getUserByUsername(token, decodedToken.nomeUsuario);
 
-      setUser(user);
+      setUser(userData);
+      console.log('userData > ', userData);
+      
 
       if (!userData.isAdm) {
         const albumData = await getAlbumByContract(token, userData);
