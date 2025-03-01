@@ -62,7 +62,7 @@
 /* Limite máximo de 4 fotos por linha */
 @media (min-width: 800px) {
     .gallery {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
