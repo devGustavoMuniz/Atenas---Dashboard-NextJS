@@ -58,10 +58,36 @@ const AddUserPage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    let processedValue = value;
+  
+    if (name === 'telefone') {
+      processedValue = formatPhoneNumber(value);
+    }
+  
     setUser(prevUser => ({
       ...prevUser,
-      [name]: value
+      [name]: processedValue
     }));
+  };
+
+  const formatPhoneNumber = (value) => {
+    const cleaned = value.replace(/\D/g, ''); // Remove todos os não dígitos
+    const ddd = cleaned.substring(0, 2);
+    const part1 = cleaned.substring(2, 7);
+    const part2 = cleaned.substring(7, 11);
+    let formatted = '';
+  
+    if (ddd) {
+      formatted += `(${ddd}`;
+      if (ddd.length === 2) formatted += ') ';
+    }
+    if (part1) {
+      formatted += part1;
+      if (part1.length === 5) formatted += '-';
+    }
+    if (part2) formatted += part2;
+  
+    return formatted;
   };
 
   const handleSubmit = async () => {
@@ -124,7 +150,14 @@ const AddUserPage = () => {
               </label>
             </div>
 
-            <input type="phone" id="phone" placeholder="Telefone" name="telefone" onChange={handleChange} />
+            <input 
+              type="text" 
+              id="phone" 
+              placeholder="Telefone" 
+              name="telefone" 
+              value={user.telefone || ''} 
+              onChange={handleChange} 
+            />
             <select name="isAdm" id="isAdm" onChange={handleChange}>
               <option value=''>Tipo de Usuário</option>
               <option value={true}>Administrador</option>

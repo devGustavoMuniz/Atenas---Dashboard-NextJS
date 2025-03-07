@@ -42,9 +42,15 @@ const SingleUserPage = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        let processedValue = value;
+    
+        if (name === 'telefone') {
+        processedValue = formatPhoneNumber(value);
+        }
+    
         setUser(prevUser => ({
-            ...prevUser,
-            [name]: value
+        ...prevUser,
+        [name]: processedValue
         }));
     };
 
@@ -101,6 +107,26 @@ const SingleUserPage = () => {
         }
     };
 
+    const formatPhoneNumber = (value) => {
+        const cleaned = value.replace(/\D/g, ''); // Remove todos os não dígitos
+        const ddd = cleaned.substring(0, 2);
+        const part1 = cleaned.substring(2, 7);
+        const part2 = cleaned.substring(7, 11);
+        let formatted = '';
+      
+        if (ddd) {
+          formatted += `(${ddd}`;
+          if (ddd.length === 2) formatted += ') ';
+        }
+        if (part1) {
+          formatted += part1;
+          if (part1.length === 5) formatted += '-';
+        }
+        if (part2) formatted += part2;
+      
+        return formatted;
+      };
+
     return (
         <div className={styles.mainWrapper}>
             <div className={styles.container}>
@@ -133,7 +159,13 @@ const SingleUserPage = () => {
 
                         <div>
                             <label>Telefone:</label>
-                            <input type="text" name="telefone" id='phone' value={user.telefone} onChange={handleChange} />
+                            <input 
+                                type="text" 
+                                id="phone" 
+                                name="telefone" 
+                                value={user.telefone || ''} 
+                                onChange={handleChange} 
+                            />
                         </div>
 
                         <div>
