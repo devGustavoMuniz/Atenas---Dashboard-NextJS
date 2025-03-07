@@ -6,9 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { redirect, useRouter } from 'next/navigation';
 import { handleAddAlbum, handlerUser } from "../../../lib";
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import SearchableDropdown from "../../../ui/dropdown/SearchableDropdown";
 
 const AddProductPage = () => {
   const [album, setAlbum] = useState({});
@@ -22,7 +20,7 @@ const AddProductPage = () => {
     colacao: false,
     identificacao: false,
   });
-  const [label, setLabel] = useState('');
+  const [value, setValue] = useState("");
 
   const router = useRouter();
 
@@ -39,9 +37,6 @@ const AddProductPage = () => {
   // Seta os valores dos inputs nos albums
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'contratoEAluno') {
-      setLabel(value);
-    }
     setAlbum(prevUser => ({
       ...prevUser,
       [name]: value
@@ -61,17 +56,26 @@ const AddProductPage = () => {
     setLoading(true);
     const token = localStorage.getItem('token');
     if (!token) return router.push('/login');
-    const contratoEAluno = JSON.parse(album.contratoEAluno);
     const eventosSelecionados = Object.keys(eventTypes).filter(event => eventTypes[event]);
-    
-    const albumG = {
-      numeroContrato: contratoEAluno.numeroContrato,
-      nomeAluno: contratoEAluno.nome,
-      tipoAlbum: album.tipoAlbum,
-      minFotos: album.minFotos,
-      evento: eventosSelecionados
-    }
 
+    const regex = /(.*)\s\(([^)]+)\)/;
+    const match = value.match(regex);
+
+    let albumG;
+    if (match) {
+      albumG = {
+        numeroContrato: match[2],
+        nomeAluno: match[1],
+        tipoAlbum: album.tipoAlbum,
+        minFotos: album.minFotos,
+        evento: eventosSelecionados
+      };
+
+      console.log(albumG);
+    }
+    
+    
+    
     
 
     const response = await handleAddAlbum(token, albumG);
@@ -82,9 +86,10 @@ const AddProductPage = () => {
     toast("Erro ao adicionar álbum");
   };
 
-  const usersOption = users.map(user => (
-    <MenuItem key={user.numeroContrato + user.nomeUsuario} value={JSON.stringify({ nome: user.nomeUsuario, numeroContrato: user.numeroContrato })}>{`${user.nomeUsuario} (${user.numeroContrato})`}</MenuItem>
-  ));
+  const usersOption = users.map(user => ({
+    id: { nome: user.nomeUsuario, numeroContrato: user.numeroContrato },
+    name: `${user.nomeUsuario} (${user.numeroContrato})`
+  }));
 
   return (
     <div className={styles.mainWrapper}>
@@ -95,18 +100,16 @@ const AddProductPage = () => {
           </div>
         )}
         <div className={styles.form}>
-          <FormControl fullWidth>
-            <Select
-              name="contratoEAluno"
-              className={styles.bgBlack}
-              onChange={handleChange}
-              displayEmpty
-              value={label}
-            >
-              <MenuItem value="">Selecione o Aluno do Álbum</MenuItem>
-              {usersOption}
-            </Select>
-          </FormControl>
+          <div className={styles.dropdownWrapper}>
+            <label htmlFor="idDropdown">Selecione o aluno:</label>
+            <SearchableDropdown
+              options={usersOption}
+              label="name"
+              id="idDropdown"
+              selectedVal={value}
+              handleChange={(val) => setValue(val)}
+            />
+          </div>
 
           <div className={styles.numPageWrapper}>
             <input className={styles.input} type="text" placeholder="Mínimo de páginas" name="minFotos" required onChange={handleChange} />
