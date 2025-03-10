@@ -72,23 +72,28 @@ const AddUserPage = () => {
 
   const formatPhoneNumber = (value) => {
     const cleaned = value.replace(/\D/g, ''); // Remove todos os não dígitos
-    const ddd = cleaned.substring(0, 2);
-    const part1 = cleaned.substring(2, 7);
-    const part2 = cleaned.substring(7, 11);
     let formatted = '';
-  
-    if (ddd) {
-      formatted += `(${ddd}`;
-      if (ddd.length === 2) formatted += ') ';
+
+    if (cleaned.length <= 2) {
+        return `(${cleaned}`;
     }
+    
+    const ddd = cleaned.substring(0, 2);
+    const isMobile = cleaned.length > 10; // Celular tem 11 dígitos
+    const part1 = cleaned.substring(2, isMobile ? 7 : 6);
+    const part2 = cleaned.substring(isMobile ? 7 : 6);
+
+    formatted = `(${ddd})`;
     if (part1) {
-      formatted += part1;
-      if (part1.length === 5) formatted += '-';
+        formatted += ` ${part1}`;
     }
-    if (part2) formatted += part2;
-  
+    if (part2) {
+        formatted += `-${part2}`;
+    }
+
     return formatted;
-  };
+};
+
 
   const handleSubmit = async () => {
     const token = localStorage.getItem('token');
