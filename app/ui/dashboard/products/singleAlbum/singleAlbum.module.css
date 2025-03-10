@@ -244,3 +244,12 @@
 .bgBlack label {
   color: var(--text);
 }
+
+.dropdownWrapper {
+  width: 100%;
+}
+
+.dropdownWrapper label {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
